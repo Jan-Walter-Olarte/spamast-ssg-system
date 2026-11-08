@@ -25,7 +25,7 @@ class LoginController extends Controller
         ]);
 
         // 2. Try to log in. Only email and password are checked against the database.
-        if (! Auth::attempt($request->only('email', 'password'))) {
+        if (! Auth::attempt($request->only('email', 'password'), $request->boolean('remember'))) {
             return back()
                 ->withErrors(['email' => 'These credentials do not match our records.'])
                 ->onlyInput('email');
