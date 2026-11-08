@@ -36,7 +36,7 @@
         @endif
 
         {{-- action is # for now; we connect the real route in step 3.9 --}}
-        <form method="POST" action="#">
+        <form method="POST" action="{{ route('register.store') }}">
             @csrf
 
             <label for="first_name">First name</label>

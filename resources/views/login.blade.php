@@ -44,7 +44,7 @@
         @endif
 
         {{-- action is # for now; we connect the real route in step 3.9 --}}
-        <form method="POST" action="#">
+        <form method="POST" action="{{ route('login.store') }}">
             @csrf
 
             <label for="email">Email</label>
