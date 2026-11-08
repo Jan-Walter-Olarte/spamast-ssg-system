@@ -38,7 +38,7 @@
     <!-- Sidebar (links are # for now; we connect them in later steps) -->
     <aside class="sidebar">
         <div class="brand">SPAMAST <span>SSG</span></div>
-        <a href="#" class="active">Dashboard</a>
+        <a href="{{ route('profile.edit') }}">My Profile</a>
         <a href="#">Events</a>
         <a href="#">Announcements</a>
         <a href="{{ route('main') }}">Refresh</a>
