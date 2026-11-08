@@ -16,36 +16,35 @@ class RegisterController extends Controller
         return view('register');
     }
 
-    // Check the form, then save the new user.
+    // Check the form, then save the new user as an inactive Student.
     public function register(Request $request): RedirectResponse
     {
-        // 1. Validate: stop here and go back with errors if anything is wrong.
+        // 1. Validate. There is no role field any more.
         $data = $request->validate([
             'first_name'  => ['required', 'string', 'max:255'],
             'middle_name' => ['nullable', 'string', 'max:255'],
             'last_name'   => ['required', 'string', 'max:255'],
             'email'       => ['required', 'email:rfc', 'max:255', 'unique:users,email'],
-            'role'        => ['required', 'in:Student,Officer,Adviser'],
             'password'    => ['required', 'string', 'min:8', 'confirmed'],
         ]);
 
-        // 2. Find the role row that matches the chosen role name.
-        $role = Role::where('name', $data['role'])->firstOrFail();
+        // 2. Every public sign-up is a Student. The role is set here, in code.
+        $studentRole = Role::where('name', 'Student')->firstOrFail();
 
-        // 3. Save the user with a hashed password.
+        // 3. Save the user, inactive until an Admin approves the account.
         User::create([
             'first_name'  => $data['first_name'],
             'middle_name' => $data['middle_name'] ?? null,
             'last_name'   => $data['last_name'],
             'email'       => $data['email'],
             'password'    => Hash::make($data['password']),
-            'role_id'     => $role->id,
-            'is_active'   => true,
+            'role_id'     => $studentRole->id,
+            'is_active'   => false,
             'is_admin'    => false,
         ]);
 
-        // 4. Send the person to the login page with a success message.
+        // 4. Back to the login page with a message.
         return redirect()->route('login')
-            ->with('success', 'Registration successful. You can now log in.');
+            ->with('success', 'Registration successful. Your account is awaiting Admin approval.');
     }
 }

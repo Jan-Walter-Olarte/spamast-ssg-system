@@ -51,14 +51,6 @@
             <label for="email">Email</label>
             <input type="email" id="email" name="email" value="{{ old('email') }}" required>
 
-            <label for="role">Role</label>
-            <select id="role" name="role" required>
-                <option value="">Select a role</option>
-                <option value="Student" @selected(old('role') === 'Student')>Student</option>
-                <option value="Officer" @selected(old('role') === 'Officer')>Officer</option>
-                <option value="Adviser" @selected(old('role') === 'Adviser')>Adviser</option>
-            </select>
-
             <label for="password">Password</label>
             <input type="password" id="password" name="password" required>
 

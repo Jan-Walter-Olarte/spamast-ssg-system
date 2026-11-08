@@ -38,7 +38,7 @@ class LoginController extends Controller
             $request->session()->regenerateToken();
 
             return back()
-                ->withErrors(['email' => 'Your account is inactive.'])
+                ->withErrors(['email' => 'Your account is inactive or awaiting Admin approval.'])
                 ->onlyInput('email');
         }
 
