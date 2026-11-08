@@ -45,7 +45,10 @@ class LoginController extends Controller
         // 4. New session id after login, to stop session fixation.
         $request->session()->regenerate();
 
-        return redirect()->intended(route('main'));
+        // 5. Send each person to their own dashboard.
+        $user = $request->user();
+
+        return redirect()->intended(route($user->dashboardRoute()));
     }
 
     // End the session.

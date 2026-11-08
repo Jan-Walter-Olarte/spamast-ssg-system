@@ -2,15 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
 class MainController extends Controller
 {
-    // Show the main dashboard for the logged-in user.
-    public function view(Request $request)
+    // /main now only forwards people to their own dashboard.
+    public function view(Request $request): RedirectResponse
     {
-        return view('main', [
-            'user' => $request->user(), // the person who is logged in
-        ]);
+        return redirect()->route($request->user()->dashboardRoute());
     }
 }

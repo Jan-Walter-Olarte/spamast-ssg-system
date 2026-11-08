@@ -1,8 +1,9 @@
 <?php
 
-use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\MainController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\MainController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RegisterController;
 use Illuminate\Support\Facades\Route;
 
@@ -20,7 +21,7 @@ Route::middleware('guest')->group(function () {
     Route::post('/login', [LoginController::class, 'login'])->name('login.store');
 });
 
-// Auth routes: only for logged-in people.
+// Auth routes: only for logged-in people (any role).
 Route::middleware('auth')->group(function () {
     Route::get('/main', [MainController::class, 'view'])->name('main');
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
@@ -28,4 +29,24 @@ Route::middleware('auth')->group(function () {
     // Profile: every logged-in user can edit their own account.
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
+});
+
+// Admin section
+Route::middleware(['auth', 'role:Admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/dashboard', [DashboardController::class, 'admin'])->name('dashboard');
+});
+
+// Officer section
+Route::middleware(['auth', 'role:Officer'])->prefix('officer')->name('officer.')->group(function () {
+    Route::get('/dashboard', [DashboardController::class, 'officer'])->name('dashboard');
+});
+
+// Adviser section
+Route::middleware(['auth', 'role:Adviser'])->prefix('adviser')->name('adviser.')->group(function () {
+    Route::get('/dashboard', [DashboardController::class, 'adviser'])->name('dashboard');
+});
+
+// Student section
+Route::middleware(['auth', 'role:Student'])->prefix('student')->name('student.')->group(function () {
+    Route::get('/dashboard', [DashboardController::class, 'student'])->name('dashboard');
 });

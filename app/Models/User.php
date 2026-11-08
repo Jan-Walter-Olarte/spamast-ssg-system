@@ -32,7 +32,7 @@ class User extends Authenticatable
     {
         return [
             'password'  => 'hashed',
-            'is_active' => 'boolean', // 1/0 in MySQL becomes true/false in PHP
+            'is_active' => 'boolean',
             'is_admin'  => 'boolean',
         ];
     }
@@ -43,5 +43,27 @@ class User extends Authenticatable
     public function role(): BelongsTo
     {
         return $this->belongsTo(Role::class);
+    }
+
+    /**
+     * Does this user have any of the given roles?
+     * Example: $user->hasRole('Officer', 'Adviser')
+     */
+    public function hasRole(string ...$names): bool
+    {
+        return in_array($this->role?->name, $names, true);
+    }
+
+    /**
+     * The route name of this user's own dashboard.
+     */
+    public function dashboardRoute(): string
+    {
+        return match ($this->role?->name) {
+            'Admin'   => 'admin.dashboard',
+            'Officer' => 'officer.dashboard',
+            'Adviser' => 'adviser.dashboard',
+            default   => 'student.dashboard',
+        };
     }
 }
