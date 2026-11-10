@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\MainController;
@@ -34,6 +35,10 @@ Route::middleware('auth')->group(function () {
 // Admin section
 Route::middleware(['auth', 'role:Admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'admin'])->name('dashboard');
+
+    // User management (no "show" page)
+    Route::resource('users', UserController::class)->except(['show']);
+    Route::patch('users/{user}/toggle', [UserController::class, 'toggle'])->name('users.toggle');
 });
 
 // Officer section

@@ -7,7 +7,7 @@
 
     {{-- Admin only --}}
     @if (auth()->user()->hasRole('Admin'))
-        <a href="#">Manage Users</a>
+        <a href="{{ route('admin.users.index') }}" class="{{ request()->routeIs('admin.users.*') ? 'active' : '' }}">Manage Users</a>
         <a href="#">Institutes</a>
         <a href="#">Programs</a>
     @endif

@@ -179,3 +179,18 @@ input[type="checkbox"] { width: auto; }
 .auth-links { text-align: center; margin-top: 18px; font-size: 0.95rem; color: var(--muted); }
 .remember { margin-top: 12px; }
 .remember label { display: inline; font-weight: 400; margin: 0 0 0 4px; }
+
+/* ---------- Extra pieces for the admin screens ---------- */
+.btn-sm { padding: 6px 12px; font-size: 0.85rem; border-width: 1px; }
+.btn-light { background: var(--white); color: var(--midnight); border-color: var(--line); }
+.btn-light:hover { background: var(--soft); border-color: var(--muted); }
+.btn-disabled { opacity: 0.5; cursor: default; }
+
+.page-head { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 20px; }
+.page-head h1 { margin: 0; }
+
+.actions { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.inline-form { display: inline; margin: 0; }
+
+.pager { display: flex; justify-content: space-between; align-items: center; margin-top: 16px; color: var(--muted); }
+.field-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 0 16px; }
