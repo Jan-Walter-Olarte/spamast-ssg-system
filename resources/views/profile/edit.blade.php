@@ -42,7 +42,7 @@
             <label for="password_confirmation">Confirm new password</label>
             <input type="password" id="password_confirmation" name="password_confirmation">
 
-            <button type="submit" class="save">Save changes</button>
+            <button type="submit" class="btn">Save changes</button>
         </form>
     </div>
 @endsection
