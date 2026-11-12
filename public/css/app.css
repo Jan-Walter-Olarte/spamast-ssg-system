@@ -194,3 +194,10 @@ input[type="checkbox"] { width: auto; }
 
 .pager { display: flex; justify-content: space-between; align-items: center; margin-top: 16px; color: var(--muted); }
 .field-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 0 16px; }
+
+/* ---------- Expandable edit boxes inside tables ---------- */
+details summary { cursor: pointer; color: var(--blue); font-weight: 600; }
+details[open] { margin-bottom: 8px; }
+.inline-edit { display: grid; gap: 6px; margin-top: 8px; min-width: 220px; }
+.inline-edit input { padding: 6px 8px; font-size: 0.9rem; }
+.inline-edit label { margin: 4px 0 0; font-size: 0.8rem; color: var(--muted); }

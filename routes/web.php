@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\EventAttendanceController;
+use App\Http\Controllers\Officer\AttendanceController as OfficerAttendanceController;
 use App\Http\Controllers\Student\AttendanceController;
 use App\Http\Controllers\Officer\SessionController;
 use App\Http\Controllers\EventController;
@@ -66,6 +68,11 @@ Route::middleware(['auth', 'role:Officer'])->prefix('officer')->name('officer.')
 
     // Open or close a session by hand (manual events only)
     Route::patch('sessions/{session}/toggle', [SessionController::class, 'toggle'])->name('sessions.toggle');
+
+     // Attendance: add a missing record, correct times, delete a record
+    Route::post('events/{event}/attendance', [OfficerAttendanceController::class, 'store'])->name('attendance.store');
+    Route::put('attendance/{attendance}', [OfficerAttendanceController::class, 'update'])->name('attendance.update');
+    Route::delete('attendance/{attendance}', [OfficerAttendanceController::class, 'destroy'])->name('attendance.destroy');
 });
 
 // Adviser section
@@ -86,4 +93,9 @@ Route::middleware(['auth', 'role:Student'])->prefix('student')->name('student.')
 Route::middleware(['auth', 'role:Officer,Adviser,Student'])->group(function () {
     Route::get('/events', [EventController::class, 'index'])->name('events.index');
     Route::get('/events/{event}', [EventController::class, 'show'])->name('events.show');
+});
+
+// Attendance list of one event: Officers and Advisers (the Officer controls are guarded separately).
+Route::middleware(['auth', 'role:Officer,Adviser'])->group(function () {
+    Route::get('/events/{event}/attendance', [EventAttendanceController::class, 'index'])->name('attendance.index');
 });
