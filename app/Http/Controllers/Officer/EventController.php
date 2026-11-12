@@ -9,6 +9,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
+use App\Support\DashboardCache;
 
 class EventController extends Controller
 {
@@ -41,6 +42,8 @@ class EventController extends Controller
                 EventSession::create(['event_id' => $event->id, 'period' => $period] + $this->times($data, $period));
             }
         });
+
+        DashboardCache::events();
 
         return redirect()->route('events.index')
             ->with('success', 'Event created successfully.');
@@ -98,6 +101,8 @@ class EventController extends Controller
             }
         });
 
+        DashboardCache::events();
+
         return redirect()->route('events.show', $event)
             ->with('success', 'Event updated successfully.');
     }
@@ -113,6 +118,8 @@ class EventController extends Controller
         Gate::authorize('delete', $event);
 
         $event->delete(); // its sessions are removed by cascade
+
+        DashboardCache::events();
 
         return redirect()->route('events.index')
             ->with('success', 'Event deleted.');

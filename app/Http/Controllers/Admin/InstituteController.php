@@ -7,6 +7,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
+use App\Support\DashboardCache;
 
 class InstituteController extends Controller
 {
@@ -62,6 +63,8 @@ class InstituteController extends Controller
             'updated_at' => now(),
         ]);
 
+        DashboardCache::admin();
+
         return redirect()->route('admin.institutes.index')
             ->with('success', 'Institute added successfully.');
     }
@@ -108,6 +111,8 @@ class InstituteController extends Controller
         }
 
         DB::table('institutes')->where('id', $row->id)->delete();
+
+        DashboardCache::admin();
 
         return redirect()->route('admin.institutes.index')
             ->with('success', 'Institute deleted.');

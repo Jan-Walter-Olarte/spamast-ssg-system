@@ -31,6 +31,9 @@ class AttendanceController extends Controller
             return back()->with('error', 'You have already checked in to this session.');
         }
 
+        DashboardCache::adviser();
+        DashboardCache::student($request->user()->id);
+
         return back()->with('success', 'Checked in at ' . $attendance->check_in_at->format('h:i A') . '.');
     }
 

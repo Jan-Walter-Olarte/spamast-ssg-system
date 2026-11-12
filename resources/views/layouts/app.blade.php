@@ -15,7 +15,13 @@
         <!-- Top bar with the logged-in person -->
         <header class="topbar">
             <div class="user">
-                <div class="avatar">{{ strtoupper(substr(auth()->user()->first_name, 0, 1) . substr(auth()->user()->last_name, 0, 1)) }}</div>
+                <div class="avatar">
+                    @if (auth()->user()->photo)
+                        <img src="{{ asset('storage/' . auth()->user()->photo) }}" alt="" class="avatar-img">
+                    @else
+                        {{ strtoupper(substr(auth()->user()->first_name, 0, 1) . substr(auth()->user()->last_name, 0, 1)) }}
+                    @endif
+                </div>
                 <div>
                     {{ auth()->user()->first_name }} {{ auth()->user()->last_name }}
                     <small>{{ auth()->user()->role->name }}</small>

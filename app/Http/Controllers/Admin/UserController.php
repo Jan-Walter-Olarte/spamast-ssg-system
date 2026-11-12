@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
+use App\Support\DashboardCache;
 
 class UserController extends Controller
 {
@@ -77,6 +78,8 @@ class UserController extends Controller
             'is_admin'    => false,
         ]);
 
+        DashboardCache::people();
+
         return redirect()->route('admin.users.index')
             ->with('success', 'User created successfully.');
     }
@@ -120,6 +123,8 @@ class UserController extends Controller
 
         $user->save();
 
+        DashboardCache::people();
+
         return redirect()->route('admin.users.index')
             ->with('success', 'User updated successfully.');
     }
@@ -130,6 +135,8 @@ class UserController extends Controller
         $this->ensureManageable($user);
 
         $user->update(['is_active' => ! $user->is_active]);
+
+        DashboardCache::people();
 
         return back()->with(
             'success',
@@ -143,6 +150,8 @@ class UserController extends Controller
         Gate::authorize('delete', $user);
 
         $user->delete();
+
+        DashboardCache::people();
 
         return redirect()->route('admin.users.index')
             ->with('success', 'User deleted.');

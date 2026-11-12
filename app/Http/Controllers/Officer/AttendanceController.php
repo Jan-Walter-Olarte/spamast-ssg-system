@@ -9,6 +9,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\Rule;
+use App\Support\DashboardCache;
 
 class AttendanceController extends Controller
 {
@@ -44,6 +45,8 @@ class AttendanceController extends Controller
             'check_out_at'     => $data['check_out_at'] ?? null,
         ]);
 
+        DashboardCache::adviser();
+
         return back()->with('success', 'Attendance record added.');
     }
 
@@ -68,6 +71,8 @@ class AttendanceController extends Controller
         Gate::authorize('manage-ssg');
 
         $attendance->delete();
+
+        DashboardCache::adviser();
 
         return back()->with('success', 'Attendance record deleted.');
     }

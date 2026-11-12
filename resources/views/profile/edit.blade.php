@@ -14,7 +14,7 @@
             </div>
         @endif
 
-        <form method="POST" action="{{ route('profile.update') }}">
+        <form method="POST" action="{{ route('profile.update') }}" enctype="multipart/form-data">
             @csrf
             @method('PUT')
 
@@ -29,6 +29,16 @@
 
             <label for="email">Email</label>
             <input type="email" id="email" name="email" value="{{ old('email', $user->email) }}" required>
+
+            <h2>Profile photo (optional)</h2>
+
+            @if ($user->photo)
+                <img src="{{ asset('storage/' . $user->photo) }}" alt="Your current photo" class="photo-preview">
+            @endif
+
+            <label for="photo">Choose a photo</label>
+            <input type="file" id="photo" name="photo" accept="image/jpeg,image/png,image/webp">
+            <p class="hint">JPG, PNG or WEBP, up to 2 MB. Choosing a new photo replaces the old one.</p>
 
             <h2>Change password (optional)</h2>
             <p class="hint">Leave these three boxes empty to keep your current password.</p>

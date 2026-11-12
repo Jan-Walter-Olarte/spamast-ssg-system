@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use App\Support\DashboardCache;
 
 class RegisterController extends Controller
 {
@@ -42,6 +43,8 @@ class RegisterController extends Controller
             'is_active'   => false,
             'is_admin'    => false,
         ]);
+
+        DashboardCache::admin();
 
         // 4. Back to the login page with a message.
         return redirect()->route('login')

@@ -13,6 +13,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
+use App\Support\DashboardCache;
 
 class StudentController extends Controller
 {
@@ -104,6 +105,8 @@ class StudentController extends Controller
             );
         });
 
+        DashboardCache::people();
+
         return redirect()->route('officer.students.index')
             ->with('success', 'Student added. Their temporary password is their student number.');
     }
@@ -157,6 +160,8 @@ class StudentController extends Controller
     public function destroy(Student $student): RedirectResponse
     {
         $student->user->delete();
+
+        DashboardCache::people();
 
         return redirect()->route('officer.students.index')
             ->with('success', 'Student deleted.');

@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\Rule;
+use App\Support\DashboardCache;
 
 class PenaltyController extends Controller
 {
@@ -70,6 +71,9 @@ class PenaltyController extends Controller
             }
         });
 
+        DashboardCache::officer();
+        DashboardCache::adviser();
+
         return redirect()->route('penalties.index', $event)
             ->with('success', "Fines calculated: {$withFine} student(s) with missed scans, {$cleared} with full attendance.");
     }
@@ -91,6 +95,9 @@ class PenaltyController extends Controller
             'status'   => $data['status'],
         ]);
 
+        DashboardCache::officer();
+        DashboardCache::adviser();
+
         return back()->with('success', 'Penalty updated.');
     }
 
@@ -100,6 +107,9 @@ class PenaltyController extends Controller
         Gate::authorize('manage-ssg');
 
         $penalty->delete();
+
+        DashboardCache::officer();
+        DashboardCache::adviser();
 
         return back()->with('success', 'Penalty deleted.');
     }

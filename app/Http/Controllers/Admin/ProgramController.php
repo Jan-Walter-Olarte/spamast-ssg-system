@@ -7,6 +7,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
+use App\Support\DashboardCache;
 
 class ProgramController extends Controller
 {
@@ -73,6 +74,8 @@ class ProgramController extends Controller
             'created_at'   => now(),
             'updated_at'   => now(),
         ]);
+
+        DashboardCache::admin();
 
         return redirect()->route('admin.programs.index')
             ->with('success', 'Program added successfully.');

@@ -4,13 +4,10 @@
 
 @section('content')
     <h1>Welcome, {{ auth()->user()->first_name }}!</h1>
-    <p>You are logged in as <strong>Student</strong>.</p>
+    <p>You are logged in as <strong>Student</strong>. Today is {{ today()->format('F d, Y') }}.</p>
 
-    {{-- Placeholder numbers; real data comes in Stage B2 --}}
     <div class="grid">
-        <div class="card"><div class="num">0</div>Upcoming events</div>
-        <div class="card"><div class="num">0</div>My attendance</div>
-        <div class="card"><div class="num">0</div>My fines</div>
-        <div class="card"><div class="num">0</div>Announcements</div>
+        <div class="card"><div class="num">{{ $stats['events'] }}</div><a href="{{ route('events.index') }}">Upcoming events</a></div>
+        <div class="card"><div class="num">{{ $stats['attendance'] }}</div>My attendance records</div>
     </div>
 @endsection
