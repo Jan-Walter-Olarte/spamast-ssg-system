@@ -7,22 +7,29 @@
         <h1>{{ $event->title }}</h1>
         <div class="actions">
             <a href="{{ route('events.index') }}" class="btn btn-light">Back to events</a>
+
+            {{-- Officers and Advisers: view the records --}}
             @can('view-reports')
                 <a href="{{ route('attendance.index', $event) }}" class="btn btn-light">Attendance</a>
                 <a href="{{ route('penalties.index', $event) }}" class="btn btn-light">Fines</a>
+                <a href="{{ route('reports.show', $event) }}" class="btn btn-light">Report</a>
             @endcan
-            @can('update', $event)
+
+            {{-- Officers only --}}
+            @can('manage-ssg')
                 <a href="{{ route('officer.events.edit', $event) }}" class="btn">Edit</a>
             @endcan
         </div>
     </div>
 
-    {{-- A Student account that has no linked student record --}}
-    @if ($isStudent && ! $student)
-        <div class="alert alert-warning">
-            Your account is not linked to a student record yet, so you cannot check in. Please ask an Officer to add you as a student.
-        </div>
-    @endif
+    {{-- Students whose account has no linked student record --}}
+    @can('use-attendance')
+        @if (! $student)
+            <div class="alert alert-warning">
+                Your account is not linked to a student record yet, so you cannot check in. Please ask an Officer to add you as a student.
+            </div>
+        @endif
+    @endcan
 
     <div class="panel panel-wide">
         <div class="grid">
@@ -30,7 +37,7 @@
             <div class="card"><h3>Venue</h3>{{ $event->venue }}</div>
             <div class="card"><h3>Day type</h3>{{ ucwords(str_replace('_', ' ', $event->day_type)) }}</div>
             <div class="card"><h3>Availability</h3>{{ ucfirst($event->availability) }}</div>
-            <div class="card"><h3>Fine per missed scan</h3>{{ $event->fine_per_miss }}</div>
+            <div class="card"><h3>Fine per missed scan</h3>&#8369;{{ number_format((float) $event->fine_per_miss, 2) }}</div>
             <div class="card"><h3>Created by</h3>{{ $event->creator?->first_name }} {{ $event->creator?->last_name }}</div>
         </div>
 
@@ -39,7 +46,7 @@
             <p>{{ $event->description }}</p>
         @endif
 
-        <h2>Sessions</h2>
+        <h2>Session schedule</h2>
         <div class="table-wrap">
             <table class="table">
                 <thead>
@@ -51,18 +58,20 @@
                         <th>Check-out</th>
 
                         {{-- Officers of a manual event --}}
-                        @if ($event->availability === 'manual')
-                            @can('update', $event)
+                        @can('manage-ssg')
+                            @if ($event->availability === 'manual')
                                 <th>Actions</th>
-                            @endcan
-                        @endif
+                            @endif
+                        @endcan
 
                         {{-- Students with a linked record --}}
-                        @if ($student)
-                            <th>My check-in</th>
-                            <th>My check-out</th>
-                            <th>Actions</th>
-                        @endif
+                        @can('use-attendance')
+                            @if ($student)
+                                <th>My check-in</th>
+                                <th>My check-out</th>
+                                <th>Actions</th>
+                            @endif
+                        @endcan
                     </tr>
                 </thead>
                 <tbody>
@@ -95,9 +104,9 @@
                                 </span>
                             </td>
 
-                            {{-- Open and Close buttons: Officers, manual events only --}}
-                            @if ($event->availability === 'manual')
-                                @can('update', $event)
+                            {{-- Officer controls: open or close a manual session --}}
+                            @can('manage-ssg')
+                                @if ($event->availability === 'manual')
                                     <td>
                                         <div class="actions">
                                             <form method="POST" action="{{ route('officer.sessions.toggle', $session) }}" class="inline-form">
@@ -119,31 +128,33 @@
                                             </form>
                                         </div>
                                     </td>
-                                @endcan
-                            @endif
+                                @endif
+                            @endcan
 
-                            {{-- Students: their own times and only the buttons that apply right now --}}
-                            @if ($student)
-                                <td>{{ $mine?->check_in_at ? $mine->check_in_at->format('h:i A') : '-' }}</td>
-                                <td>{{ $mine?->check_out_at ? $mine->check_out_at->format('h:i A') : '-' }}</td>
-                                <td>
-                                    <div class="actions">
-                                        @if ($session->isCheckInOpen() && ! $mine)
-                                            <form method="POST" action="{{ route('student.attendance.check-in', $session) }}" class="inline-form">
-                                                @csrf
-                                                <button type="submit" class="btn btn-sm">Check in</button>
-                                            </form>
-                                        @endif
+                            {{-- Student controls: their own times and only the buttons that apply right now --}}
+                            @can('use-attendance')
+                                @if ($student)
+                                    <td>{{ $mine?->check_in_at ? $mine->check_in_at->format('h:i A') : '-' }}</td>
+                                    <td>{{ $mine?->check_out_at ? $mine->check_out_at->format('h:i A') : '-' }}</td>
+                                    <td>
+                                        <div class="actions">
+                                            @if ($session->isCheckInOpen() && ! $mine)
+                                                <form method="POST" action="{{ route('student.attendance.check-in', $session) }}" class="inline-form">
+                                                    @csrf
+                                                    <button type="submit" class="btn btn-sm">Check in</button>
+                                                </form>
+                                            @endif
 
-                                        @if ($session->isCheckOutOpen() && $mine && ! $mine->check_out_at)
-                                            <form method="POST" action="{{ route('student.attendance.check-out', $session) }}" class="inline-form">
-                                                @csrf
-                                                <button type="submit" class="btn btn-sm">Check out</button>
-                                            </form>
-                                        @endif
-                                    </div>
-                                </td>
-                            @endif
+                                            @if ($session->isCheckOutOpen() && $mine && ! $mine->check_out_at)
+                                                <form method="POST" action="{{ route('student.attendance.check-out', $session) }}" class="inline-form">
+                                                    @csrf
+                                                    <button type="submit" class="btn btn-sm">Check out</button>
+                                                </form>
+                                            @endif
+                                        </div>
+                                    </td>
+                                @endif
+                            @endcan
                         </tr>
                     @endforeach
                 </tbody>
