@@ -1,6 +1,6 @@
 <?php
 
-
+use App\Http\Controllers\ReportController;
 use App\Http\Controllers\EventPenaltyController;
 use App\Http\Controllers\Officer\PenaltyController;
 use App\Http\Controllers\EventAttendanceController;
@@ -107,4 +107,8 @@ Route::middleware(['auth', 'role:Officer,Adviser,Student'])->group(function () {
 Route::middleware(['auth', 'role:Officer,Adviser'])->group(function () {
     Route::get('/events/{event}/attendance', [EventAttendanceController::class, 'index'])->name('attendance.index');
     Route::get('/events/{event}/penalties', [EventPenaltyController::class, 'index'])->name('penalties.index');
+
+    // Reports
+    Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
+    Route::get('/reports/{event}', [ReportController::class, 'show'])->name('reports.show');
 });

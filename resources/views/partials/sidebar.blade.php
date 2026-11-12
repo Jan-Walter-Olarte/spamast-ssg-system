@@ -30,7 +30,7 @@
 
     {{-- Officers and Advisers (Gate: view-reports) --}}
     @can('view-reports')
-        <a href="#">Reports</a>
+        <a href="{{ route('reports.index') }}" class="{{ request()->routeIs('reports.*') ? 'active' : '' }}">Reports</a>
     @endcan
 
     {{-- Students (Gate: use-attendance) --}}

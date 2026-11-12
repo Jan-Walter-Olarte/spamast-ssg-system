@@ -201,3 +201,19 @@ details[open] { margin-bottom: 8px; }
 .inline-edit { display: grid; gap: 6px; margin-top: 8px; min-width: 220px; }
 .inline-edit input { padding: 6px 8px; font-size: 0.9rem; }
 .inline-edit label { margin: 4px 0 0; font-size: 0.8rem; color: var(--muted); }
+
+/* ---------- Printing: hide the menus and buttons, keep the report ---------- */
+@media print {
+    .sidebar, .topbar, .no-print { display: none !important; }
+    .app { display: block; }
+    body { background: var(--white); }
+    .page { padding: 0; }
+    .panel { box-shadow: none; border: none; padding: 0; }
+    .card { box-shadow: none; }
+    .table th { background: transparent; }
+    a { color: inherit; text-decoration: none; }
+}
+
+.report-block { margin-bottom: 28px; }
+.total-row td, .total-row th { font-weight: 700; background: var(--soft); }
+.grand-row td, .grand-row th { font-weight: 700; background: var(--midnight); color: var(--white); }
