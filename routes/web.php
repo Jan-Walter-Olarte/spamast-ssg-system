@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Admin\ProgramController;
+use App\Http\Controllers\Admin\InstituteController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\LoginController;
@@ -39,6 +41,12 @@ Route::middleware(['auth', 'role:Admin'])->prefix('admin')->name('admin.')->grou
     // User management (no "show" page)
     Route::resource('users', UserController::class)->except(['show']);
     Route::patch('users/{user}/toggle', [UserController::class, 'toggle'])->name('users.toggle');
+
+    // Institutes (Query Builder)
+    Route::resource('institutes', InstituteController::class)->except(['show']);
+
+    // Programs (Query Builder)
+    Route::resource('programs', ProgramController::class)->except(['show']);
 });
 
 // Officer section

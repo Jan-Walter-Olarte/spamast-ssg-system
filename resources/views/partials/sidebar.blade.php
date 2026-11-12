@@ -8,8 +8,8 @@
     {{-- Admin only --}}
     @if (auth()->user()->hasRole('Admin'))
         <a href="{{ route('admin.users.index') }}" class="{{ request()->routeIs('admin.users.*') ? 'active' : '' }}">Manage Users</a>
-        <a href="#">Institutes</a>
-        <a href="#">Programs</a>
+        <a href="{{ route('admin.institutes.index') }}" class="{{ request()->routeIs('admin.institutes.*') ? 'active' : '' }}">Institutes</a>
+        <a href="{{ route('admin.programs.index') }}" class="{{ request()->routeIs('admin.programs.*') ? 'active' : '' }}">Programs</a>
     @endif
 
     {{-- Officers (Gate: manage-ssg) --}}
