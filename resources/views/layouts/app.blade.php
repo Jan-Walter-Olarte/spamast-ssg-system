@@ -30,12 +30,18 @@
         </header>
 
         <main class="page">
-            {{-- Flash message area --}}
+            {{-- Flash message area: each alert can be closed --}}
             @if (session('success'))
-                <div class="alert alert-success">{{ session('success') }}</div>
+                <div class="alert alert-success alert-dismissible">
+                    <span>{{ session('success') }}</span>
+                    <button type="button" class="alert-close" onclick="this.parentElement.remove()" aria-label="Close">&times;</button>
+                </div>
             @endif
             @if (session('error'))
-                <div class="alert alert-error">{{ session('error') }}</div>
+                <div class="alert alert-error alert-dismissible">
+                    <span>{{ session('error') }}</span>
+                    <button type="button" class="alert-close" onclick="this.parentElement.remove()" aria-label="Close">&times;</button>
+                </div>
             @endif
 
             @yield('content')

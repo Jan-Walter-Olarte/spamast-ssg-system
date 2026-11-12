@@ -15,11 +15,37 @@ class EventAttendanceController extends Controller
     // List the attendance records of one event (Officers and Advisers).
     public function index(Request $request, Event $event)
     {
+        // "Clear filters": forget the saved filters, then show the page with none.
+        if ($request->boolean('clear')) {
+            $request->session()->forget(['filters.institute_id', 'filters.program_id']);
+
+            return redirect()->route('attendance.index', $event);
+        }
+
         $event->load('sessions');
 
-        $sessionId   = $request->query('session');
-        $instituteId = $request->query('institute');
-        $programId   = $request->query('program');
+        // Use the filter from the address when the form was submitted,
+        // otherwise fall back to the one saved in the session.
+        $instituteId = $request->has('institute')
+            ? $request->query('institute')
+            : session('filters.institute_id');
+
+        $programId = $request->has('program')
+            ? $request->query('program')
+            : session('filters.program_id');
+
+        // Save the current choice so the user returns to the same view.
+        session([
+            'filters.institute_id' => $instituteId,
+            'filters.program_id'   => $programId,
+        ]);
+
+        // True when the filters came from the session, not from this request.
+        $restored = ! $request->has('institute')
+            && ! $request->has('program')
+            && ($instituteId || $programId);
+
+        $sessionId = $request->query('session');
 
         $attendances = Attendance::with(['student.user', 'student.program.institute', 'session'])
             // Only records that belong to this event's sessions.
@@ -48,6 +74,7 @@ class EventAttendanceController extends Controller
             'sessionId'   => $sessionId,
             'instituteId' => $instituteId,
             'programId'   => $programId,
+            'restored'    => $restored,
         ]);
     }
 }

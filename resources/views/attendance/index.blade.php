@@ -19,6 +19,11 @@
         </div>
     @endif
 
+    {{-- A note when the filters were restored from the session --}}
+    @if ($restored)
+        <div class="alert">Showing your saved filters from your last visit. Use "Clear filters" to remove them.</div>
+    @endif
+
     {{-- Filters (a GET form, so the address keeps them) --}}
     <form method="GET" action="{{ route('attendance.index', $event) }}" class="toolbar">
         <select name="session">
@@ -46,7 +51,7 @@
         </select>
 
         <button type="submit" class="btn">Filter</button>
-        <a href="{{ route('attendance.index', $event) }}" class="btn btn-light">Reset</a>
+        <a href="{{ route('attendance.index', [$event, 'clear' => 1]) }}" class="btn btn-light">Clear filters</a>
     </form>
 
     {{-- Officers only: add a missing record --}}

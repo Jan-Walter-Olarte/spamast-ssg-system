@@ -223,3 +223,7 @@ details[open] { margin-bottom: 8px; }
 .tabs a { padding: 10px 18px; text-decoration: none; color: var(--muted); font-weight: 600; border-bottom: 3px solid transparent; margin-bottom: -2px; }
 .tabs a:hover { color: var(--midnight); }
 .tabs a.active { color: var(--blue); border-bottom-color: var(--blue); }
+
+/* ---------- Dismissible alerts ---------- */
+.alert-dismissible { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+.alert-close { background: none; border: 0; font-size: 1.3rem; line-height: 1; cursor: pointer; color: inherit; }
