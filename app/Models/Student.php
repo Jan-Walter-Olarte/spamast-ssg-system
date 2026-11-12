@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 #[Fillable(['user_id', 'program_id', 'student_no', 'sex', 'year_level'])]
 class Student extends Model
@@ -23,5 +24,21 @@ class Student extends Model
     public function program(): BelongsTo
     {
         return $this->belongsTo(Program::class);
+    }
+
+    /**
+     * A student has many attendance records.
+     */
+    public function attendances(): HasMany
+    {
+        return $this->hasMany(Attendance::class);
+    }
+
+    /**
+     * A student has many penalties (one per event at most).
+     */
+    public function penalties(): HasMany
+    {
+        return $this->hasMany(Penalty::class);
     }
 }

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 #[Fillable(['event_session_id', 'student_id', 'check_in_at', 'check_out_at'])]
 class Attendance extends Model
@@ -23,5 +24,20 @@ class Attendance extends Model
         ];
     }
 
-    // Relationships are added in a later step.
+    /**
+     * The session this record belongs to.
+     * The method is named session(), so we name the foreign key ourselves.
+     */
+    public function session(): BelongsTo
+    {
+        return $this->belongsTo(EventSession::class, 'event_session_id');
+    }
+
+    /**
+     * The student this record belongs to.
+     */
+    public function student(): BelongsTo
+    {
+        return $this->belongsTo(Student::class);
+    }
 }

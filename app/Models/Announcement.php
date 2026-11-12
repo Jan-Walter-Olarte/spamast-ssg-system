@@ -4,9 +4,16 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 #[Fillable(['user_id', 'title', 'body', 'attachment'])]
 class Announcement extends Model
 {
-    // Relationships are added in a later step.
+    /**
+     * The user who posted the announcement.
+     */
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
 }
