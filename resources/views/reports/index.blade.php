@@ -32,7 +32,7 @@
                             <td>{{ $event->event_date->format('M d, Y') }}</td>
                             <td>{{ $event->title }}</td>
                             <td>{{ $event->venue }}</td>
-                            <td>{{ ucwords(str_replace('_', ' ', $event->day_type)) }}</td>
+                            <td>{{ Str::headline($event->day_type) }}</td>
                             <td>{{ $event->attendances_count }}</td>
                             <td>
                                 <a href="{{ route('reports.show', $event) }}" class="btn btn-light btn-sm">View report</a>

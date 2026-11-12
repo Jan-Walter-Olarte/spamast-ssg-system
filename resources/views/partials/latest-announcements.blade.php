@@ -5,9 +5,10 @@
         <p style="margin-bottom: 12px;">
             <a href="{{ route('announcements.show', $announcement) }}"><strong>{{ $announcement->title }}</strong></a><br>
             <span style="color: var(--muted); font-size: 0.85rem;">
-                {{ $announcement->user->first_name }} {{ $announcement->user->last_name }}
+                {{ $announcement->user->full_name }}
                 &middot; {{ $announcement->created_at->format('M d, Y') }}
-            </span>
+            </span><br>
+            {{ Str::limit($announcement->body, 120) }}
         </p>
     @empty
         <p>No announcements yet.</p>

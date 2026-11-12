@@ -55,8 +55,8 @@
                             <td>{{ $event->event_date->format('M d, Y') }}</td>
                             <td>{{ $event->title }}</td>
                             <td>{{ $event->venue }}</td>
-                            <td>{{ ucwords(str_replace('_', ' ', $event->day_type)) }}</td>
-                            <td><span class="badge badge-info">{{ ucfirst($event->availability) }}</span></td>
+                            <td>{{ Str::headline($event->day_type) }}</td>
+                            <td><span class="badge badge-info">{{ Str::headline($event->availability) }}</span></td>
                             <td>&#8369;{{ number_format((float) $event->fine_per_miss, 2) }}</td>
                             @can('view-reports')
                                 <td>{{ $event->attendances_count }}</td>

@@ -20,7 +20,7 @@
             <p>
                 <strong>{{ $event->title }}</strong><br>
                 {{ $event->event_date->format('F d, Y') }} &middot; {{ $event->venue }}<br>
-                {{ ucwords(str_replace('_', ' ', $event->day_type)) }} &middot;
+                {{ Str::headline($event->day_type) }} &middot;
                 {{ $event->sessions_count * 2 }} scans required per student &middot;
                 &#8369;{{ number_format((float) $event->fine_per_miss, 2) }} per missed scan
             </p>
@@ -102,7 +102,7 @@
                                 <td>{{ $penalty->missed_scans }}</td>
                                 <td>&#8369;{{ number_format((float) $penalty->amount, 2) }}</td>
                                 <td>{{ $penalty->sanction ?: '-' }}</td>
-                                <td>{{ ucfirst($penalty->status) }}</td>
+                                <td>{{ Str::headline($penalty->status) }}</td>
                             </tr>
                         @empty
                             <tr><td colspan="7">No penalties yet. An Officer can generate them from the Fines page after the event.</td></tr>

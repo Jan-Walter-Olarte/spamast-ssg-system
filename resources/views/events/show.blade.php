@@ -35,10 +35,10 @@
         <div class="grid">
             <div class="card"><h3>Date</h3>{{ $event->event_date->format('F d, Y') }}</div>
             <div class="card"><h3>Venue</h3>{{ $event->venue }}</div>
-            <div class="card"><h3>Day type</h3>{{ ucwords(str_replace('_', ' ', $event->day_type)) }}</div>
-            <div class="card"><h3>Availability</h3>{{ ucfirst($event->availability) }}</div>
+            <div class="card"><h3>Day type</h3>{{ Str::headline($event->day_type) }}</div>
+            <div class="card"><h3>Availability</h3>{{ Str::headline($event->availability) }}</div>
             <div class="card"><h3>Fine per missed scan</h3>&#8369;{{ number_format((float) $event->fine_per_miss, 2) }}</div>
-            <div class="card"><h3>Created by</h3>{{ $event->creator?->first_name }} {{ $event->creator?->last_name }}</div>
+            <div class="card"><h3>Created by</h3>{{ $event->creator?->full_name }}</div>
         </div>
 
         @if ($event->description)
@@ -78,7 +78,7 @@
                     @foreach ($event->sessions as $session)
                         @php($mine = $myAttendances[$session->id] ?? null)
                         <tr>
-                            <td>{{ ucwords(str_replace('_', ' ', $session->period)) }}</td>
+                            <td>{{ Str::headline($session->period) }}</td>
                             <td>
                                 @if ($session->check_in_start)
                                     {{ substr($session->check_in_start, 0, 5) }} to {{ substr($session->check_in_end, 0, 5) }}

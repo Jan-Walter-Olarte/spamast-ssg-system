@@ -16,7 +16,7 @@
 
     <div class="panel panel-wide">
         <p style="color: var(--muted);">
-            Posted by {{ $announcement->user->first_name }} {{ $announcement->user->last_name }}
+            Posted by {{ $announcement->user->full_name }}
             on {{ $announcement->created_at->format('F d, Y h:i A') }}
         </p>
 

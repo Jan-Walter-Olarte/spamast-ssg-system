@@ -23,7 +23,7 @@
                     @endif
                 </div>
                 <div>
-                    {{ auth()->user()->first_name }} {{ auth()->user()->last_name }}
+                    {{ auth()->user()->full_name }}
                     <small>{{ auth()->user()->role->name }}</small>
                 </div>
             </div>

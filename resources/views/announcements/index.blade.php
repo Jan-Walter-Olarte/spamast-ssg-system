@@ -27,8 +27,12 @@
                 <tbody>
                     @forelse ($announcements as $announcement)
                         <tr>
-                            <td><a href="{{ route('announcements.show', $announcement) }}">{{ $announcement->title }}</a></td>
-                            <td>{{ $announcement->user->first_name }} {{ $announcement->user->last_name }}</td>
+                            <td>
+                                <a href="{{ route('announcements.show', $announcement) }}">{{ $announcement->title }}</a>
+                                <br>
+                                <span style="color: var(--muted); font-size: 0.85rem;">{{ Str::limit($announcement->body, 120) }}</span>
+                            </td>
+                            <td>{{ $announcement->user->full_name }}</td>
                             <td>{{ $announcement->created_at->format('M d, Y h:i A') }}</td>
                             <td>
                                 @if ($announcement->attachment)

@@ -94,7 +94,7 @@
                                 @php
                                     $badge = ['unpaid' => 'badge-warning', 'paid' => 'badge-success', 'served' => 'badge-info'][$penalty->status];
                                 @endphp
-                                <span class="badge {{ $badge }}">{{ ucfirst($penalty->status) }}</span>
+                                <span class="badge {{ $badge }}">{{ Str::headline($penalty->status) }}</span>
                             </td>
 
                             {{-- Officer controls: Advisers never see these --}}

@@ -9,6 +9,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class AnnouncementController extends Controller
 {
@@ -27,7 +28,7 @@ class AnnouncementController extends Controller
 
         // Store the optional attachment in storage/app/public/announcements.
         $path = $request->hasFile('attachment')
-            ? $request->file('attachment')->store('announcements', 'public')
+            ? $this->storeAttachment($request, $data['title'])
             : null;
 
         Announcement::create([
@@ -67,7 +68,7 @@ class AnnouncementController extends Controller
                 Storage::disk('public')->delete($announcement->attachment);
             }
 
-            $announcement->attachment = $request->file('attachment')->store('announcements', 'public');
+            $announcement->attachment = $this->storeAttachment($request, $data['title']);
         }
 
         $announcement->save();
@@ -91,6 +92,19 @@ class AnnouncementController extends Controller
 
         return redirect()->route('announcements.index')
             ->with('success', 'Announcement deleted.');
+    }
+
+    // Save the uploaded file as "<title-slug>-<random>.<extension>" and return its path.
+    private function storeAttachment(Request $request, string $title): string
+    {
+        $file = $request->file('attachment');
+
+        // slug(): "Midterm Exam Schedule!" becomes "midterm-exam-schedule".
+        // The slug is cut to 50 characters, and a short random value keeps every name unique.
+        $slug = Str::limit(Str::slug($title), 50, '') ?: 'announcement';
+        $name = $slug . '-' . Str::lower(Str::random(6)) . '.' . $file->extension();
+
+        return $file->storeAs('announcements', $name, 'public');
     }
 
     // The validation rules shared by store() and update().

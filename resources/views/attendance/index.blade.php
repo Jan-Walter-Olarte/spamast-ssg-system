@@ -30,7 +30,7 @@
             <option value="">All sessions</option>
             @foreach ($event->sessions as $session)
                 <option value="{{ $session->id }}" @selected((string) $sessionId === (string) $session->id)>
-                    {{ ucwords(str_replace('_', ' ', $session->period)) }}
+                    {{ Str::headline($session->period) }}
                 </option>
             @endforeach
         </select>
@@ -67,7 +67,7 @@
                         <option value="">Select a session</option>
                         @foreach ($event->sessions as $session)
                             <option value="{{ $session->id }}" @selected((string) old('event_session_id') === (string) $session->id)>
-                                {{ ucwords(str_replace('_', ' ', $session->period)) }}
+                                {{ Str::headline($session->period) }}
                             </option>
                         @endforeach
                     </select>
@@ -118,7 +118,7 @@
                             <td>{{ $attendance->student->user->last_name }}, {{ $attendance->student->user->first_name }}</td>
                             <td>{{ $attendance->student->program->code }}</td>
                             <td><span class="badge badge-info">{{ $attendance->student->program->institute->code }}</span></td>
-                            <td>{{ ucwords(str_replace('_', ' ', $attendance->session->period)) }}</td>
+                            <td>{{ Str::headline($attendance->session->period) }}</td>
                             <td>{{ $attendance->check_in_at ? $attendance->check_in_at->format('M d, h:i A') : '-' }}</td>
                             <td>{{ $attendance->check_out_at ? $attendance->check_out_at->format('M d, h:i A') : '-' }}</td>
 
