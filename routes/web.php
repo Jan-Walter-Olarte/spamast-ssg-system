@@ -1,5 +1,8 @@
 <?php
 
+
+use App\Http\Controllers\EventPenaltyController;
+use App\Http\Controllers\Officer\PenaltyController;
 use App\Http\Controllers\EventAttendanceController;
 use App\Http\Controllers\Officer\AttendanceController as OfficerAttendanceController;
 use App\Http\Controllers\Student\AttendanceController;
@@ -69,10 +72,15 @@ Route::middleware(['auth', 'role:Officer'])->prefix('officer')->name('officer.')
     // Open or close a session by hand (manual events only)
     Route::patch('sessions/{session}/toggle', [SessionController::class, 'toggle'])->name('sessions.toggle');
 
-     // Attendance: add a missing record, correct times, delete a record
+    // Attendance: add a missing record, correct times, delete a record
     Route::post('events/{event}/attendance', [OfficerAttendanceController::class, 'store'])->name('attendance.store');
     Route::put('attendance/{attendance}', [OfficerAttendanceController::class, 'update'])->name('attendance.update');
     Route::delete('attendance/{attendance}', [OfficerAttendanceController::class, 'destroy'])->name('attendance.destroy');
+
+    // Fines and sanctions
+    Route::post('events/{event}/penalties/generate', [PenaltyController::class, 'generate'])->name('penalties.generate');
+    Route::put('penalties/{penalty}', [PenaltyController::class, 'update'])->name('penalties.update');
+    Route::delete('penalties/{penalty}', [PenaltyController::class, 'destroy'])->name('penalties.destroy');
 });
 
 // Adviser section
@@ -98,4 +106,5 @@ Route::middleware(['auth', 'role:Officer,Adviser,Student'])->group(function () {
 // Attendance list of one event: Officers and Advisers (the Officer controls are guarded separately).
 Route::middleware(['auth', 'role:Officer,Adviser'])->group(function () {
     Route::get('/events/{event}/attendance', [EventAttendanceController::class, 'index'])->name('attendance.index');
+    Route::get('/events/{event}/penalties', [EventPenaltyController::class, 'index'])->name('penalties.index');
 });

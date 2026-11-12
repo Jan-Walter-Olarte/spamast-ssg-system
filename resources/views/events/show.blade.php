@@ -9,6 +9,7 @@
             <a href="{{ route('events.index') }}" class="btn btn-light">Back to events</a>
             @can('view-reports')
                 <a href="{{ route('attendance.index', $event) }}" class="btn btn-light">Attendance</a>
+                <a href="{{ route('penalties.index', $event) }}" class="btn btn-light">Fines</a>
             @endcan
             @can('update', $event)
                 <a href="{{ route('officer.events.edit', $event) }}" class="btn">Edit</a>
