@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Student\AttendanceController;
 use App\Http\Controllers\Officer\SessionController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\Officer\EventController as OfficerEventController;
@@ -75,6 +76,10 @@ Route::middleware(['auth', 'role:Adviser'])->prefix('adviser')->name('adviser.')
 // Student section
 Route::middleware(['auth', 'role:Student'])->prefix('student')->name('student.')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'student'])->name('dashboard');
+
+    // Check in and check out of a session
+    Route::post('sessions/{session}/check-in', [AttendanceController::class, 'checkIn'])->name('attendance.check-in');
+    Route::post('sessions/{session}/check-out', [AttendanceController::class, 'checkOut'])->name('attendance.check-out');
 });
 
 // Events: everyone with an event role may view the list and the details.

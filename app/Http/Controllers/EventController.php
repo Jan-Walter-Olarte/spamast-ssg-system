@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Attendance;
 use App\Models\Event;
 use Illuminate\Http\Request;
 
@@ -30,10 +31,29 @@ class EventController extends Controller
     }
 
     // Show one event with its sessions.
-    public function show(Event $event)
+    public function show(Request $request, Event $event)
     {
         $event->load(['sessions.event', 'creator']);
 
-        return view('events.show', ['event' => $event]);
+        $user      = $request->user();
+        $isStudent = $user->hasRole('Student');
+        $student   = $isStudent ? $user->student : null;
+
+        // This student's own attendance rows for this event, indexed by session id.
+        $myAttendances = collect();
+
+        if ($student) {
+            $myAttendances = Attendance::where('student_id', $student->id)
+                ->whereIn('event_session_id', $event->sessions->pluck('id'))
+                ->get()
+                ->keyBy('event_session_id');
+        }
+
+        return view('events.show', [
+            'event'         => $event,
+            'isStudent'     => $isStudent,
+            'student'       => $student,
+            'myAttendances' => $myAttendances,
+        ]);
     }
 }

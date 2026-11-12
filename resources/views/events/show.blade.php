@@ -13,6 +13,13 @@
         </div>
     </div>
 
+    {{-- A Student account that has no linked student record --}}
+    @if ($isStudent && ! $student)
+        <div class="alert alert-warning">
+            Your account is not linked to a student record yet, so you cannot check in. Please ask an Officer to add you as a student.
+        </div>
+    @endif
+
     <div class="panel panel-wide">
         <div class="grid">
             <div class="card"><h3>Date</h3>{{ $event->event_date->format('F d, Y') }}</div>
@@ -38,15 +45,25 @@
                         <th>Check-out window</th>
                         <th>Check-in</th>
                         <th>Check-out</th>
+
+                        {{-- Officers of a manual event --}}
                         @if ($event->availability === 'manual')
                             @can('update', $event)
                                 <th>Actions</th>
                             @endcan
                         @endif
+
+                        {{-- Students with a linked record --}}
+                        @if ($student)
+                            <th>My check-in</th>
+                            <th>My check-out</th>
+                            <th>Actions</th>
+                        @endif
                     </tr>
                 </thead>
                 <tbody>
                     @foreach ($event->sessions as $session)
+                        @php($mine = $myAttendances[$session->id] ?? null)
                         <tr>
                             <td>{{ ucwords(str_replace('_', ' ', $session->period)) }}</td>
                             <td>
@@ -99,6 +116,29 @@
                                         </div>
                                     </td>
                                 @endcan
+                            @endif
+
+                            {{-- Students: their own times and only the buttons that apply right now --}}
+                            @if ($student)
+                                <td>{{ $mine?->check_in_at ? $mine->check_in_at->format('h:i A') : '-' }}</td>
+                                <td>{{ $mine?->check_out_at ? $mine->check_out_at->format('h:i A') : '-' }}</td>
+                                <td>
+                                    <div class="actions">
+                                        @if ($session->isCheckInOpen() && ! $mine)
+                                            <form method="POST" action="{{ route('student.attendance.check-in', $session) }}" class="inline-form">
+                                                @csrf
+                                                <button type="submit" class="btn btn-sm">Check in</button>
+                                            </form>
+                                        @endif
+
+                                        @if ($session->isCheckOutOpen() && $mine && ! $mine->check_out_at)
+                                            <form method="POST" action="{{ route('student.attendance.check-out', $session) }}" class="inline-form">
+                                                @csrf
+                                                <button type="submit" class="btn btn-sm">Check out</button>
+                                            </form>
+                                        @endif
+                                    </div>
+                                </td>
                             @endif
                         </tr>
                     @endforeach
