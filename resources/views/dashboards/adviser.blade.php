@@ -11,4 +11,6 @@
         <div class="card"><div class="num">{{ $stats['attendance'] }}</div>Attendance records</div>
         <div class="card"><div class="num">{{ $stats['unpaid'] }}</div>Unpaid fines</div>
     </div>
+
+    @include('partials.latest-announcements')
 @endsection

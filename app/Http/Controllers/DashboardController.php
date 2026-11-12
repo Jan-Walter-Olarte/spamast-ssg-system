@@ -49,7 +49,10 @@ class DashboardController extends Controller
             ];
         });
 
-        return view('dashboards.officer', ['stats' => $stats]);
+        return view('dashboards.officer', [
+            'stats'               => $stats,
+            'latestAnnouncements' => $this->latestAnnouncements(),
+        ]);
     }
 
     // Adviser: upcoming events, attendance records and unpaid fines.
@@ -63,7 +66,10 @@ class DashboardController extends Controller
             ];
         });
 
-        return view('dashboards.adviser', ['stats' => $stats]);
+        return view('dashboards.adviser', [
+            'stats'               => $stats,
+            'latestAnnouncements' => $this->latestAnnouncements(),
+        ]);
     }
 
     // Student: upcoming events and their own attendance count.
@@ -81,6 +87,19 @@ class DashboardController extends Controller
             ];
         });
 
-        return view('dashboards.student', ['stats' => $stats]);
+        return view('dashboards.student', [
+            'stats'               => $stats,
+            'latestAnnouncements' => $this->latestAnnouncements(),
+        ]);
+    }
+
+    // The three newest announcements. Fetched fresh each time, so a new post shows at once.
+    private function latestAnnouncements()
+    {
+        return Announcement::with('user')
+            ->latest()
+            ->orderByDesc('id')
+            ->take(3)
+            ->get();
     }
 }

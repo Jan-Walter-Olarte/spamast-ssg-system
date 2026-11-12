@@ -18,14 +18,15 @@
         <a href="{{ route('events.index') }}" class="{{ request()->routeIs('events.*', 'officer.events.*') ? 'active' : '' }}">Events</a>
         <a href="#">Attendance</a>
         <a href="#">Fines</a>
-        <a href="#">Announcements</a>
+        <a href="{{ route('announcements.index') }}" class="{{ request()->routeIs('announcements.*', 'officer.announcements.*') ? 'active' : '' }}">Announcements</a>
     @endcan
 
-    {{-- Advisers view events, attendance and fines --}}
+    {{-- Advisers view events, attendance, fines and announcements --}}
     @if (auth()->user()->hasRole('Adviser'))
-        <a href="{{ route('events.index') }}" class="{{ request()->routeIs('events.*', 'officer.events.*') ? 'active' : '' }}">Events</a>
+        <a href="{{ route('events.index') }}" class="{{ request()->routeIs('events.*') ? 'active' : '' }}">Events</a>
         <a href="#">Attendance</a>
         <a href="#">Fines</a>
+        <a href="{{ route('announcements.index') }}" class="{{ request()->routeIs('announcements.*') ? 'active' : '' }}">Announcements</a>
     @endif
 
     {{-- Officers and Advisers (Gate: view-reports) --}}
@@ -35,8 +36,8 @@
 
     {{-- Students (Gate: use-attendance) --}}
     @can('use-attendance')
-        <a href="{{ route('events.index') }}" class="{{ request()->routeIs('events.*', 'officer.events.*') ? 'active' : '' }}">Events</a>
-        <a href="#">Announcements</a>
+        <a href="{{ route('events.index') }}" class="{{ request()->routeIs('events.*') ? 'active' : '' }}">Events</a>
+        <a href="{{ route('announcements.index') }}" class="{{ request()->routeIs('announcements.*') ? 'active' : '' }}">Announcements</a>
         <a href="#">Check In / Check Out</a>
     @endcan
 </aside>

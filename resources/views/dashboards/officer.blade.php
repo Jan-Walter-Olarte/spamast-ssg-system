@@ -10,6 +10,8 @@
         <div class="card"><div class="num">{{ $stats['students'] }}</div><a href="{{ route('officer.students.index') }}">Students</a></div>
         <div class="card"><div class="num">{{ $stats['events'] }}</div><a href="{{ route('events.index') }}">Upcoming events</a></div>
         <div class="card"><div class="num">{{ $stats['unpaid'] }}</div>Unpaid fines</div>
-        <div class="card"><div class="num">{{ $stats['announcements'] }}</div>Announcements</div>
+        <div class="card"><div class="num">{{ $stats['announcements'] }}</div><a href="{{ route('announcements.index') }}">Announcements</a></div>
     </div>
+
+    @include('partials.latest-announcements')
 @endsection

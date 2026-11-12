@@ -10,4 +10,6 @@
         <div class="card"><div class="num">{{ $stats['events'] }}</div><a href="{{ route('events.index') }}">Upcoming events</a></div>
         <div class="card"><div class="num">{{ $stats['attendance'] }}</div>My attendance records</div>
     </div>
+
+    @include('partials.latest-announcements')
 @endsection

@@ -19,6 +19,8 @@ use App\Http\Controllers\MainController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RegisterController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AnnouncementController;
+use App\Http\Controllers\Officer\AnnouncementController as OfficerAnnouncementController;
 
 // Landing route: when someone opens the main address (/), show our landing page.
 Route::get('/', function () {
@@ -81,6 +83,9 @@ Route::middleware(['auth', 'role:Officer'])->prefix('officer')->name('officer.')
     Route::post('events/{event}/penalties/generate', [PenaltyController::class, 'generate'])->name('penalties.generate');
     Route::put('penalties/{penalty}', [PenaltyController::class, 'update'])->name('penalties.update');
     Route::delete('penalties/{penalty}', [PenaltyController::class, 'destroy'])->name('penalties.destroy');
+
+    // Announcements: post, edit and delete (reading is shared, see the bottom of the file)
+    Route::resource('announcements', OfficerAnnouncementController::class)->except(['index', 'show']);
 });
 
 // Adviser section
@@ -111,4 +116,10 @@ Route::middleware(['auth', 'role:Officer,Adviser'])->group(function () {
     // Reports
     Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
     Route::get('/reports/{event}', [ReportController::class, 'show'])->name('reports.show');
+});
+
+// Announcements: everyone with a role may read them.
+Route::middleware(['auth', 'role:Officer,Adviser,Student'])->group(function () {
+    Route::get('/announcements', [AnnouncementController::class, 'index'])->name('announcements.index');
+    Route::get('/announcements/{announcement}', [AnnouncementController::class, 'show'])->name('announcements.show');
 });
