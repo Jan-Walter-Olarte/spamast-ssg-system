@@ -38,6 +38,11 @@
                         <th>Check-out window</th>
                         <th>Check-in</th>
                         <th>Check-out</th>
+                        @if ($event->availability === 'manual')
+                            @can('update', $event)
+                                <th>Actions</th>
+                            @endcan
+                        @endif
                     </tr>
                 </thead>
                 <tbody>
@@ -58,8 +63,43 @@
                                     Not set
                                 @endif
                             </td>
-                            <td><span class="badge {{ $session->check_in_open ? 'badge-success' : 'badge-warning' }}">{{ $session->check_in_open ? 'Open' : 'Closed' }}</span></td>
-                            <td><span class="badge {{ $session->check_out_open ? 'badge-success' : 'badge-warning' }}">{{ $session->check_out_open ? 'Open' : 'Closed' }}</span></td>
+                            <td>
+                                <span class="badge {{ $session->isCheckInOpen() ? 'badge-success' : 'badge-warning' }}">
+                                    {{ $session->isCheckInOpen() ? 'Open' : 'Closed' }}
+                                </span>
+                            </td>
+                            <td>
+                                <span class="badge {{ $session->isCheckOutOpen() ? 'badge-success' : 'badge-warning' }}">
+                                    {{ $session->isCheckOutOpen() ? 'Open' : 'Closed' }}
+                                </span>
+                            </td>
+
+                            {{-- Open and Close buttons: Officers, manual events only --}}
+                            @if ($event->availability === 'manual')
+                                @can('update', $event)
+                                    <td>
+                                        <div class="actions">
+                                            <form method="POST" action="{{ route('officer.sessions.toggle', $session) }}" class="inline-form">
+                                                @csrf
+                                                @method('PATCH')
+                                                <input type="hidden" name="type" value="check_in">
+                                                <button type="submit" class="btn btn-light btn-sm">
+                                                    {{ $session->check_in_open ? 'Close check-in' : 'Open check-in' }}
+                                                </button>
+                                            </form>
+
+                                            <form method="POST" action="{{ route('officer.sessions.toggle', $session) }}" class="inline-form">
+                                                @csrf
+                                                @method('PATCH')
+                                                <input type="hidden" name="type" value="check_out">
+                                                <button type="submit" class="btn btn-light btn-sm">
+                                                    {{ $session->check_out_open ? 'Close check-out' : 'Open check-out' }}
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                @endcan
+                            @endif
                         </tr>
                     @endforeach
                 </tbody>

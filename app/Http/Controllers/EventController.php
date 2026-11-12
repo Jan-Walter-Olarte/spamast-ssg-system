@@ -32,7 +32,7 @@ class EventController extends Controller
     // Show one event with its sessions.
     public function show(Event $event)
     {
-        $event->load(['sessions', 'creator']);
+        $event->load(['sessions.event', 'creator']);
 
         return view('events.show', ['event' => $event]);
     }

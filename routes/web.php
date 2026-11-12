@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Officer\SessionController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\Officer\EventController as OfficerEventController;
 use App\Http\Controllers\Officer\StudentController;
@@ -61,6 +62,9 @@ Route::middleware(['auth', 'role:Officer'])->prefix('officer')->name('officer.')
 
     // Event management (the list and detail pages are shared, see below)
     Route::resource('events', OfficerEventController::class)->except(['index', 'show']);
+
+    // Open or close a session by hand (manual events only)
+    Route::patch('sessions/{session}/toggle', [SessionController::class, 'toggle'])->name('sessions.toggle');
 });
 
 // Adviser section
