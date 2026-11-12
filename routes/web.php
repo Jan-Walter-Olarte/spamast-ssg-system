@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Officer\StudentController;
 use App\Http\Controllers\Admin\ProgramController;
 use App\Http\Controllers\Admin\InstituteController;
 use App\Http\Controllers\Admin\UserController;
@@ -52,6 +53,9 @@ Route::middleware(['auth', 'role:Admin'])->prefix('admin')->name('admin.')->grou
 // Officer section
 Route::middleware(['auth', 'role:Officer'])->prefix('officer')->name('officer.')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'officer'])->name('dashboard');
+
+    // Student management (Eloquent, no "show" page)
+    Route::resource('students', StudentController::class)->except(['show']);
 });
 
 // Adviser section

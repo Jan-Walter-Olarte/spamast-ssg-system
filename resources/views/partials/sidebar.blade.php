@@ -14,7 +14,7 @@
 
     {{-- Officers (Gate: manage-ssg) --}}
     @can('manage-ssg')
-        <a href="#">Students</a>
+        <a href="{{ route('officer.students.index') }}" class="{{ request()->routeIs('officer.students.*') ? 'active' : '' }}">Students</a>
         <a href="#">Events</a>
         <a href="#">Attendance</a>
         <a href="#">Fines</a>
