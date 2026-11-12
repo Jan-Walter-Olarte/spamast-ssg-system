@@ -15,7 +15,7 @@
     {{-- Officers (Gate: manage-ssg) --}}
     @can('manage-ssg')
         <a href="{{ route('officer.students.index') }}" class="{{ request()->routeIs('officer.students.*') ? 'active' : '' }}">Students</a>
-        <a href="#">Events</a>
+        <a href="{{ route('events.index') }}" class="{{ request()->routeIs('events.*', 'officer.events.*') ? 'active' : '' }}">Events</a>
         <a href="#">Attendance</a>
         <a href="#">Fines</a>
         <a href="#">Announcements</a>
@@ -23,7 +23,7 @@
 
     {{-- Advisers view events, attendance and fines --}}
     @if (auth()->user()->hasRole('Adviser'))
-        <a href="#">Events</a>
+        <a href="{{ route('events.index') }}" class="{{ request()->routeIs('events.*', 'officer.events.*') ? 'active' : '' }}">Events</a>
         <a href="#">Attendance</a>
         <a href="#">Fines</a>
     @endif
@@ -35,7 +35,7 @@
 
     {{-- Students (Gate: use-attendance) --}}
     @can('use-attendance')
-        <a href="#">Events</a>
+        <a href="{{ route('events.index') }}" class="{{ request()->routeIs('events.*', 'officer.events.*') ? 'active' : '' }}">Events</a>
         <a href="#">Announcements</a>
         <a href="#">Check In / Check Out</a>
     @endcan

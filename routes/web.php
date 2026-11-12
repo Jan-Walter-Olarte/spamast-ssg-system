@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\EventController;
+use App\Http\Controllers\Officer\EventController as OfficerEventController;
 use App\Http\Controllers\Officer\StudentController;
 use App\Http\Controllers\Admin\ProgramController;
 use App\Http\Controllers\Admin\InstituteController;
@@ -56,6 +58,9 @@ Route::middleware(['auth', 'role:Officer'])->prefix('officer')->name('officer.')
 
     // Student management (Eloquent, no "show" page)
     Route::resource('students', StudentController::class)->except(['show']);
+
+    // Event management (the list and detail pages are shared, see below)
+    Route::resource('events', OfficerEventController::class)->except(['index', 'show']);
 });
 
 // Adviser section
@@ -66,4 +71,10 @@ Route::middleware(['auth', 'role:Adviser'])->prefix('adviser')->name('adviser.')
 // Student section
 Route::middleware(['auth', 'role:Student'])->prefix('student')->name('student.')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'student'])->name('dashboard');
+});
+
+// Events: everyone with an event role may view the list and the details.
+Route::middleware(['auth', 'role:Officer,Adviser,Student'])->group(function () {
+    Route::get('/events', [EventController::class, 'index'])->name('events.index');
+    Route::get('/events/{event}', [EventController::class, 'show'])->name('events.show');
 });
