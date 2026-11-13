@@ -24,6 +24,22 @@ class WeatherService
     }
 
     /**
+     * Turn the numeric weather code into a short, readable word.
+     */
+    public function label(?int $code): string
+    {
+        return match (true) {
+            $code === 0                                                    => 'Clear',
+            in_array($code, [1, 2, 3], true)                               => 'Partly Cloudy',
+            in_array($code, [45, 48], true)                                => 'Fog',
+            in_array($code, [51, 53, 55, 56, 57, 61, 63, 65, 66, 67], true) => 'Rain',
+            in_array($code, [80, 81, 82], true)                            => 'Rain Showers',
+            in_array($code, [95, 96, 99], true)                            => 'Thunderstorm',
+            default                                                        => 'Unknown',
+        };
+    }
+
+    /**
      * Ask Open-Meteo for the current weather. Returns null on any failure.
      */
     private function fetch(): ?array

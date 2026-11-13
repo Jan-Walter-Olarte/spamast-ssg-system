@@ -12,5 +12,6 @@
         <div class="card"><div class="num">{{ $stats['unpaid'] }}</div>Unpaid fines</div>
     </div>
 
+    @include('partials.weather')
     @include('partials.latest-announcements')
 @endsection

@@ -13,5 +13,6 @@
         <div class="card"><div class="num">{{ $stats['announcements'] }}</div><a href="{{ route('announcements.index') }}">Announcements</a></div>
     </div>
 
+    @include('partials.weather')
     @include('partials.latest-announcements')
 @endsection

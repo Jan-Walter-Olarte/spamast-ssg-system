@@ -11,5 +11,6 @@
         <div class="card"><div class="num">{{ $stats['attendance'] }}</div>My attendance records</div>
     </div>
 
+    @include('partials.weather')
     @include('partials.latest-announcements')
 @endsection

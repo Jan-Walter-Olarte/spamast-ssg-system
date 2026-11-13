@@ -3,7 +3,9 @@
 namespace App\Providers;
 
 use App\Models\User;
+use App\Services\WeatherService;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -34,6 +36,26 @@ class AppServiceProvider extends ServiceProvider
         // Students use attendance (check-in and check-out).
         Gate::define('use-attendance', function (User $user) {
             return $user->hasRole('Student');
+        });
+
+        // Whenever the weather partial is shown, give it the current weather.
+        View::composer('partials.weather', function ($view) {
+            $service = app(WeatherService::class);
+
+            try {
+                $weather = $service->current();
+            } catch (\Throwable $e) {
+                // Whatever goes wrong, the dashboard must still load.
+                report($e);
+                $weather = null;
+            }
+
+            $view->with([
+                'weather'      => $weather,
+                'weatherLabel' => $weather
+                    ? $service->label(data_get($weather, 'weather_code') !== null ? (int) data_get($weather, 'weather_code') : null)
+                    : null,
+            ]);
         });
     }
 }

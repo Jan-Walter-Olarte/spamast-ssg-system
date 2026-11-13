@@ -30,4 +30,6 @@
         <div class="card"><div class="num">{{ $stats['institutes'] }}</div><a href="{{ route('admin.institutes.index') }}">Institutes</a></div>
         <div class="card"><div class="num">{{ $stats['programs'] }}</div><a href="{{ route('admin.programs.index') }}">Programs</a></div>
     </div>
+
+    @include('partials.weather')
 @endsection
