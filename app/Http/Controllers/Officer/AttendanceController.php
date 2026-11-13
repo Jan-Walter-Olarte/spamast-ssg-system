@@ -5,11 +5,11 @@ namespace App\Http\Controllers\Officer;
 use App\Http\Controllers\Controller;
 use App\Models\Attendance;
 use App\Models\Event;
+use App\Support\DashboardCache;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\Rule;
-use App\Support\DashboardCache;
 
 class AttendanceController extends Controller
 {
@@ -18,15 +18,14 @@ class AttendanceController extends Controller
     {
         Gate::authorize('manage-ssg');
 
-        $data = $request->validate(
-            ['event_session_id' => [
+        $data = $request->validate([
+            'event_session_id' => [
                 'required',
                 // The session must belong to THIS event.
                 Rule::exists('event_sessions', 'id')->where('event_id', $event->id),
             ],
             'student_id' => ['required', 'exists:students,id'],
-            ] + $this->timeRules($request)
-        );
+        ] + $this->timeRules($request));
 
         // One row per student per session.
         $exists = Attendance::where('event_session_id', $data['event_session_id'])

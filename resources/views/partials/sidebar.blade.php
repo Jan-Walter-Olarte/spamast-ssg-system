@@ -12,20 +12,16 @@
         <a href="{{ route('admin.programs.index') }}" class="{{ request()->routeIs('admin.programs.*') ? 'active' : '' }}">Programs</a>
     @endif
 
-    {{-- Officers (Gate: manage-ssg) --}}
+    {{-- Officers (Gate: manage-ssg). Attendance and Fines open from each event's page. --}}
     @can('manage-ssg')
         <a href="{{ route('officer.students.index') }}" class="{{ request()->routeIs('officer.students.*') ? 'active' : '' }}">Students</a>
-        <a href="{{ route('events.index') }}" class="{{ request()->routeIs('events.*', 'officer.events.*') ? 'active' : '' }}">Events</a>
-        <a href="#">Attendance</a>
-        <a href="#">Fines</a>
+        <a href="{{ route('events.index') }}" class="{{ request()->routeIs('events.*', 'officer.events.*', 'attendance.*', 'penalties.*') ? 'active' : '' }}">Events</a>
         <a href="{{ route('announcements.index') }}" class="{{ request()->routeIs('announcements.*', 'officer.announcements.*') ? 'active' : '' }}">Announcements</a>
     @endcan
 
     {{-- Advisers view events, attendance, fines and announcements --}}
     @if (auth()->user()->hasRole('Adviser'))
-        <a href="{{ route('events.index') }}" class="{{ request()->routeIs('events.*') ? 'active' : '' }}">Events</a>
-        <a href="#">Attendance</a>
-        <a href="#">Fines</a>
+        <a href="{{ route('events.index') }}" class="{{ request()->routeIs('events.*', 'attendance.*', 'penalties.*') ? 'active' : '' }}">Events</a>
         <a href="{{ route('announcements.index') }}" class="{{ request()->routeIs('announcements.*') ? 'active' : '' }}">Announcements</a>
     @endif
 
@@ -34,10 +30,9 @@
         <a href="{{ route('reports.index') }}" class="{{ request()->routeIs('reports.*') ? 'active' : '' }}">Reports</a>
     @endcan
 
-    {{-- Students (Gate: use-attendance) --}}
+    {{-- Students (Gate: use-attendance). Check-in and check-out happen on each event's page. --}}
     @can('use-attendance')
-        <a href="{{ route('events.index') }}" class="{{ request()->routeIs('events.*') ? 'active' : '' }}">Events</a>
+        <a href="{{ route('events.index') }}" class="{{ request()->routeIs('events.*') ? 'active' : '' }}">Events &amp; Check-in</a>
         <a href="{{ route('announcements.index') }}" class="{{ request()->routeIs('announcements.*') ? 'active' : '' }}">Announcements</a>
-        <a href="#">Check In / Check Out</a>
     @endcan
 </aside>

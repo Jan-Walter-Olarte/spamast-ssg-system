@@ -103,7 +103,7 @@ class EventController extends Controller
 
         DashboardCache::events();
 
-        return redirect()->route('events.show', $event)
+        return redirect()->route('events.index')
             ->with('success', 'Event updated successfully.');
     }
 

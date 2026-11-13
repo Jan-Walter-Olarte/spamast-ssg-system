@@ -73,7 +73,7 @@ class AnnouncementController extends Controller
 
         $announcement->save();
 
-        return redirect()->route('announcements.show', $announcement)
+        return redirect()->route('announcements.index')
             ->with('success', 'Announcement updated.');
     }
 
