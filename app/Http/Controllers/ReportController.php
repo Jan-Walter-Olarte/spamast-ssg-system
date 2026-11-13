@@ -82,13 +82,37 @@ class ReportController extends Controller
             ->get()
             ->sortBy(fn ($penalty) => $penalty->student->student_no);
 
+        // ---------- NEW: fine summary by program (Support Collection) ----------
+
+        // Step 1: load this event's penalties together with each student's program.
+        $eventPenalties = $event->penalties()->with('student.program')->get();
+
+        // Step 2: put the penalties into a plain collection.
+        $fineSummary = collect($eventPenalties)
+            // Step 3: group the penalties by the student's program code (BSIT, BSA, ...).
+            ->groupBy(fn ($penalty) => $penalty->student->program->code)
+            // Step 4: turn each group into one summary row: program, number of students, total amount.
+            ->map(fn ($group, $program) => [
+                'program'  => $program,
+                'students' => $group->count(),
+                'total'    => round((float) $group->sum('amount'), 2),
+            ])
+            // Step 5: put the biggest totals first.
+            ->sortByDesc('total')
+            // Step 6: renumber the rows 0, 1, 2 ... after sorting.
+            ->values();
+
+        // Step 7: add up the program totals for the grand total.
+        $grandTotal = round((float) $fineSummary->sum('total'), 2);
+
         return view('reports.show', [
-            'event'      => $event->loadCount('sessions'),
-            'institutes' => $institutes,
-            'grand'      => $grand,
-            'penalties'  => $penalties,
-            'fineTotal'  => $penalties->sum('amount'),
+            'event'       => $event->loadCount('sessions'),
+            'institutes'  => $institutes,
+            'grand'       => $grand,
+            'penalties'   => $penalties,
+            'fineTotal'   => $penalties->sum('amount'),
+            'fineSummary' => $fineSummary,
+            'grandTotal'  => $grandTotal,
         ]);
     }
 }
-
