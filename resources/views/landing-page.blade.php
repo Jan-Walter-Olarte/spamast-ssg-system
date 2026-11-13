@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SPAMAST SSG Event Management System</title>
-    <link rel="stylesheet" href="{{ asset('css/app.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/app.css') }}"> @include('partials.theme-init')
 </head>
 <body>
 
@@ -12,6 +12,7 @@
     <header class="public-nav">
         <div class="brand">SPAMAST <span>SSG</span></div>
         <nav class="nav-actions">
+            @include('partials.theme-picker')
             <a href="{{ route('login') }}" class="btn btn-outline">Login</a>
             <a href="{{ route('register') }}" class="btn">Register</a>
         </nav>

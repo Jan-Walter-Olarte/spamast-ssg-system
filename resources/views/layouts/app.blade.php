@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'Dashboard') | SPAMAST SSG</title>
-    <link rel="stylesheet" href="{{ asset('css/app.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/app.css') }}"> @include('partials.theme-init')
 </head>
 <body>
 <div class="app">
@@ -28,11 +28,15 @@
                 </div>
             </div>
 
-            <!-- Logout is a POST form with @csrf, not a link -->
-            <form method="POST" action="{{ route('logout') }}">
-                @csrf
-                <button type="submit" class="btn btn-outline">Logout</button>
-            </form>
+            <div class="topbar-tools">
+                @include('partials.theme-picker')
+
+                <!-- Logout is a POST form with @csrf, not a link -->
+                <form method="POST" action="{{ route('logout') }}">
+                    @csrf
+                    <button type="submit" class="btn btn-outline">Logout</button>
+                </form>
+            </div>
         </header>
 
         <main class="page">

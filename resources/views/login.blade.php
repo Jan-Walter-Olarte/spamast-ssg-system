@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login | SPAMAST SSG</title>
-    <link rel="stylesheet" href="{{ asset('css/app.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/app.css') }}"> @include('partials.theme-init')
 </head>
-<body class="auth-body">
+<body class="auth-body">@include('partials.theme-picker')
     <div class="auth-box">
         <h1>SPAMAST <span>SSG</span></h1>
         <p class="auth-sub">Log in to your account</p>
