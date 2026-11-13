@@ -18,7 +18,8 @@ class ReportController extends Controller
         $search = trim((string) $request->query('search'));
 
         $events = Event::withCount('attendances')
-            ->when($search !== '', function ($query) use ($search) {
+            // filled() is true only when the value exists and is not empty.
+            ->when($request->filled('search'), function ($query) use ($search) {
                 $query->where(function ($q) use ($search) {
                     $q->where('title', 'like', "%{$search}%")
                       ->orWhere('venue', 'like', "%{$search}%");

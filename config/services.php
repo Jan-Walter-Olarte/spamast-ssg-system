@@ -35,4 +35,11 @@ return [
         ],
     ],
 
+    // Weather forecast service (Open-Meteo, no API key needed).
+    'weather' => [
+        'url'       => 'https://api.open-meteo.com/v1/forecast',
+        'latitude'  => env('WEATHER_LAT', 6.41),
+        'longitude' => env('WEATHER_LON', 125.61),
+    ],
+
 ];
