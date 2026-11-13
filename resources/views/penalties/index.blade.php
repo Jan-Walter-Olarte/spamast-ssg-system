@@ -89,7 +89,7 @@
                             <td><span class="badge badge-info">{{ $penalty->student->program->institute->code }}</span></td>
                             <td>{{ $penalty->missed_scans }}</td>
                             <td>&#8369;{{ number_format((float) $penalty->amount, 2) }}</td>
-                            <td>{{ $penalty->sanction ?: '-' }}</td>
+                            <td>{{ blank($penalty->sanction) ? '-' : $penalty->sanction }}</td>
                             <td>
                                 @php
                                     $badge = ['unpaid' => 'badge-warning', 'paid' => 'badge-success', 'served' => 'badge-info'][$penalty->status];

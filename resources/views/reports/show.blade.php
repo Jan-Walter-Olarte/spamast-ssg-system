@@ -77,6 +77,42 @@
             </div>
         </div>
 
+                {{-- Fine summary by program --}}
+        <div class="report-block">
+            <h2>Fine summary by program</h2>
+            <div class="table-wrap">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Program</th>
+                            <th>Students with fines</th>
+                            <th>Total fines</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse ($fineSummary as $row)
+                            <tr>
+                                <td>{{ $row['program'] }}</td>
+                                <td>{{ $row['students'] }}</td>
+                                <td>&#8369;{{ number_format($row['total'], 2) }}</td>
+                            </tr>
+                        @empty
+                            <tr><td colspan="3">No penalties yet. An Officer can generate them from the Fines page after the event.</td></tr>
+                        @endforelse
+                    </tbody>
+                    @if ($fineSummary->isNotEmpty())
+                        <tfoot>
+                            <tr class="grand-row">
+                                <th>Grand total</th>
+                                <th>{{ $fineSummary->sum('students') }}</th>
+                                <th>&#8369;{{ number_format($grandTotal, 2) }}</th>
+                            </tr>
+                        </tfoot>
+                    @endif
+                </table>
+            </div>
+        </div>
+
         {{-- Per-student fines --}}
         <div class="report-block">
             <h2>Missed scans, fines and sanctions</h2>
