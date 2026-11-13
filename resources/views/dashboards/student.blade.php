@@ -8,9 +8,11 @@
 
     <div class="grid">
         <div class="card"><div class="num">{{ $stats['events'] }}</div><a href="{{ route('events.index') }}">Upcoming events</a></div>
-        <div class="card"><div class="num">{{ $stats['attendance'] }}</div>My attendance records</div>
+        <div class="card"><div class="num">{{ $stats['attendance'] }}</div><a href="{{ route('student.my-attendance') }}">My attendance records</a></div>
+        <div class="card"><div class="num">&#8369;</div><a href="{{ route('student.my-fines') }}">View my fines</a></div>
     </div>
 
     @include('partials.weather')
+
     @include('partials.latest-announcements')
 @endsection

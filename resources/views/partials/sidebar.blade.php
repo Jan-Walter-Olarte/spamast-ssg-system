@@ -33,6 +33,8 @@
     {{-- Students (Gate: use-attendance). Check-in and check-out happen on each event's page. --}}
     @can('use-attendance')
         <a href="{{ route('events.index') }}" class="{{ request()->routeIs('events.*') ? 'active' : '' }}">Events &amp; Check-in</a>
+        <a href="{{ route('student.my-attendance') }}" class="{{ request()->routeIs('student.my-attendance') ? 'active' : '' }}">My Attendance</a>
+        <a href="{{ route('student.my-fines') }}" class="{{ request()->routeIs('student.my-fines') ? 'active' : '' }}">My Fines</a>
         <a href="{{ route('announcements.index') }}" class="{{ request()->routeIs('announcements.*') ? 'active' : '' }}">Announcements</a>
     @endcan
 </aside>

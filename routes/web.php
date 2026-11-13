@@ -21,6 +21,7 @@ use App\Http\Controllers\RegisterController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AnnouncementController;
 use App\Http\Controllers\Officer\AnnouncementController as OfficerAnnouncementController;
+use App\Http\Controllers\Student\MyRecordsController;
 
 // Landing route: when someone opens the main address (/), show our landing page.
 Route::get('/', function () {
@@ -74,6 +75,9 @@ Route::middleware(['auth', 'role:Officer'])->prefix('officer')->name('officer.')
     // Open or close a session by hand (manual events only)
     Route::patch('sessions/{session}/toggle', [SessionController::class, 'toggle'])->name('sessions.toggle');
 
+    // Generate a new check-in code for a session
+    Route::patch('sessions/{session}/code', [SessionController::class, 'regenerateCode'])->name('sessions.code');
+
     // Attendance: add a missing record, correct times, delete a record
     Route::post('events/{event}/attendance', [OfficerAttendanceController::class, 'store'])->name('attendance.store');
     Route::put('attendance/{attendance}', [OfficerAttendanceController::class, 'update'])->name('attendance.update');
@@ -97,9 +101,14 @@ Route::middleware(['auth', 'role:Adviser'])->prefix('adviser')->name('adviser.')
 Route::middleware(['auth', 'role:Student'])->prefix('student')->name('student.')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'student'])->name('dashboard');
 
+    // The student's own records
+    Route::get('my-attendance', [MyRecordsController::class, 'attendance'])->name('my-attendance');
+    Route::get('my-fines', [MyRecordsController::class, 'fines'])->name('my-fines');
+
     // Check in and check out of a session
-    Route::post('sessions/{session}/check-in', [AttendanceController::class, 'checkIn'])->name('attendance.check-in');
-    Route::post('sessions/{session}/check-out', [AttendanceController::class, 'checkOut'])->name('attendance.check-out');
+    // At most 10 tries per minute, so codes cannot be guessed by brute force.
+    Route::post('sessions/{session}/check-in', [AttendanceController::class, 'checkIn'])->middleware('throttle:10,1')->name('attendance.check-in');
+    Route::post('sessions/{session}/check-out', [AttendanceController::class, 'checkOut'])->middleware('throttle:10,1')->name('attendance.check-out');
 });
 
 // Events: everyone with an event role may view the list and the details.

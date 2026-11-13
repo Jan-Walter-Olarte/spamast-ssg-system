@@ -16,9 +16,38 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
     'check_out_end',
     'check_in_open',
     'check_out_open',
+    'scan_code',
 ])]
 class EventSession extends Model
 {
+    /**
+     * Runs once when the model class is first used.
+     * Every new session automatically gets a code.
+     */
+    protected static function booted(): void
+    {
+        static::creating(function (EventSession $session) {
+            if (blank($session->scan_code)) {
+                $session->scan_code = self::newCode();
+            }
+        });
+    }
+
+    /**
+     * A random 6-character code that is easy to read aloud (no I, O, 0 or 1).
+     */
+    public static function newCode(): string
+    {
+        $alphabet = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+        $code     = '';
+
+        for ($i = 0; $i < 6; $i++) {
+            $code .= $alphabet[random_int(0, strlen($alphabet) - 1)];
+        }
+
+        return $code;
+    }
+
     /**
      * Get the attributes that should be cast.
      *

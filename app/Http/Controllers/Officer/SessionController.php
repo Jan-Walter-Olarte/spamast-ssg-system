@@ -7,6 +7,7 @@ use App\Models\EventSession;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Str;
 
 class SessionController extends Controller
 {
@@ -32,5 +33,17 @@ class SessionController extends Controller
         $label = $data['type'] === 'check_in' ? 'Check-in' : 'Check-out';
 
         return back()->with('success', $label . ($session->$column ? ' opened.' : ' closed.'));
+    }
+
+    // Replace the session's code with a new one. The old code stops working at once.
+    public function regenerateCode(EventSession $session): RedirectResponse
+    {
+        $session->load('event');
+
+        Gate::authorize('update', $session->event);
+
+        $session->update(['scan_code' => EventSession::newCode()]);
+
+        return back()->with('success', 'A new code was generated for the ' . Str::headline($session->period) . ' session.');
     }
 }

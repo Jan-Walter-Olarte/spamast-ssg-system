@@ -28,6 +28,10 @@
             <div class="alert alert-warning">
                 Your account is not linked to a student record yet, so you cannot check in. Please ask an Officer to add you as a student.
             </div>
+        @else
+            <div class="alert">
+                To check in or check out, type the <strong>code shown at the venue</strong> next to the button.
+            </div>
         @endif
     @endcan
 
@@ -56,6 +60,11 @@
                         <th>Check-out window</th>
                         <th>Check-in</th>
                         <th>Check-out</th>
+
+                        {{-- Officers: the code to show at the venue --}}
+                        @can('manage-ssg')
+                            <th>Check-in code</th>
+                        @endcan
 
                         {{-- Officers of a manual event --}}
                         @can('manage-ssg')
@@ -104,6 +113,19 @@
                                 </span>
                             </td>
 
+                            {{-- Officer: the code, and a button to make a new one --}}
+                            @can('manage-ssg')
+                                <td>
+                                    <strong style="letter-spacing: 0.15em; font-size: 1.1rem;">{{ $session->scan_code }}</strong>
+                                    <form method="POST" action="{{ route('officer.sessions.code', $session) }}" class="inline-form"
+                                          onsubmit="return confirm('Generate a new code? The old code will stop working.');">
+                                        @csrf
+                                        @method('PATCH')
+                                        <button type="submit" class="btn btn-light btn-sm">New code</button>
+                                    </form>
+                                </td>
+                            @endcan
+
                             {{-- Officer controls: open or close a manual session --}}
                             @can('manage-ssg')
                                 @if ($event->availability === 'manual')
@@ -131,7 +153,7 @@
                                 @endif
                             @endcan
 
-                            {{-- Student controls: their own times and only the buttons that apply right now --}}
+                            {{-- Student controls: their own times, and the code box with the buttons that apply right now --}}
                             @can('use-attendance')
                                 @if ($student)
                                     <td>{{ $mine?->check_in_at ? $mine->check_in_at->format('h:i A') : '-' }}</td>
@@ -141,6 +163,8 @@
                                             @if ($session->isCheckInOpen() && ! $mine)
                                                 <form method="POST" action="{{ route('student.attendance.check-in', $session) }}" class="inline-form">
                                                     @csrf
+                                                    <input type="text" name="code" maxlength="6" placeholder="Code" required autocomplete="off"
+                                                           style="width: 90px; text-transform: uppercase;">
                                                     <button type="submit" class="btn btn-sm">Check in</button>
                                                 </form>
                                             @endif
@@ -148,6 +172,8 @@
                                             @if ($session->isCheckOutOpen() && $mine && ! $mine->check_out_at)
                                                 <form method="POST" action="{{ route('student.attendance.check-out', $session) }}" class="inline-form">
                                                     @csrf
+                                                    <input type="text" name="code" maxlength="6" placeholder="Code" required autocomplete="off"
+                                                           style="width: 90px; text-transform: uppercase;">
                                                     <button type="submit" class="btn btn-sm">Check out</button>
                                                 </form>
                                             @endif

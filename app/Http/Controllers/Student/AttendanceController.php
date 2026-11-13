@@ -5,8 +5,10 @@ namespace App\Http\Controllers\Student;
 use App\Http\Controllers\Controller;
 use App\Models\Attendance;
 use App\Models\EventSession;
+use App\Support\DashboardCache;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class AttendanceController extends Controller
 {
@@ -21,6 +23,12 @@ class AttendanceController extends Controller
         $session->load('event');
         abort_unless($session->isCheckInOpen(), 403, 'Check-in is closed for this session.');
 
+        // The student must type the code shown at the venue.
+        if (! $this->codeIsValid($request, $session)) {
+            return $this->backToEvent($session)
+                ->with('error', 'The code is missing or wrong. Ask the Officer for the code shown at the venue.');
+        }
+
         // One row per student per session: find it, or create it with the check-in time.
         $attendance = Attendance::firstOrCreate(
             ['event_session_id' => $session->id, 'student_id' => $student->id],
@@ -28,13 +36,14 @@ class AttendanceController extends Controller
         );
 
         if (! $attendance->wasRecentlyCreated) {
-            return back()->with('error', 'You have already checked in to this session.');
+            return $this->backToEvent($session)->with('error', 'You have already checked in to this session.');
         }
 
         DashboardCache::adviser();
         DashboardCache::student($request->user()->id);
 
-        return back()->with('success', 'Checked in at ' . $attendance->check_in_at->format('h:i A') . '.');
+        return $this->backToEvent($session)
+            ->with('success', 'Checked in at ' . $attendance->check_in_at->format('h:i A') . '.');
     }
 
     // A student checks out of one session.
@@ -46,12 +55,18 @@ class AttendanceController extends Controller
         $session->load('event');
         abort_unless($session->isCheckOutOpen(), 403, 'Check-out is closed for this session.');
 
+        // The same code is needed to check out.
+        if (! $this->codeIsValid($request, $session)) {
+            return $this->backToEvent($session)
+                ->with('error', 'The code is missing or wrong. Ask the Officer for the code shown at the venue.');
+        }
+
         $mine = Attendance::where('event_session_id', $session->id)
             ->where('student_id', $student->id);
 
         // Already checked out?
         if ((clone $mine)->whereNotNull('check_out_at')->exists()) {
-            return back()->with('error', 'You have already checked out of this session.');
+            return $this->backToEvent($session)->with('error', 'You have already checked out of this session.');
         }
 
         // The row with no check-out yet. No row means no check-in, so this fails with a 404.
@@ -59,6 +74,21 @@ class AttendanceController extends Controller
 
         $attendance->update(['check_out_at' => now()]);
 
-        return back()->with('success', 'Checked out at ' . $attendance->check_out_at->format('h:i A') . '.');
+        return $this->backToEvent($session)
+            ->with('success', 'Checked out at ' . $attendance->check_out_at->format('h:i A') . '.');
+    }
+
+    // Does the typed code match this session's code? Case and spaces are ignored.
+    private function codeIsValid(Request $request, EventSession $session): bool
+    {
+        $typed = Str::upper(str_replace(' ', '', (string) $request->input('code')));
+
+        return filled($session->scan_code) && hash_equals($session->scan_code, $typed);
+    }
+
+    // Always return to the event page this session belongs to.
+    private function backToEvent(EventSession $session): RedirectResponse
+    {
+        return redirect()->route('events.show', $session->event_id);
     }
 }
