@@ -4,7 +4,9 @@ namespace App\Providers;
 
 use App\Models\User;
 use App\Services\WeatherService;
+use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 
@@ -56,6 +58,21 @@ class AppServiceProvider extends ServiceProvider
                     ? $service->label(data_get($weather, 'weather_code') !== null ? (int) data_get($weather, 'weather_code') : null)
                     : null,
             ]);
+        });
+
+        // Build the password-reset link ourselves, so we can log it while developing.
+        ResetPassword::createUrlUsing(function ($user, string $token) {
+            $url = url(route('password.reset', [
+                'token' => $token,
+                'email' => $user->getEmailForPasswordReset(),
+            ], false));
+
+            // No real mail is sent in the lab, so write the plain link to the log.
+            if (app()->environment('local')) {
+                Log::info("Password reset link for {$user->email}: {$url}");
+            }
+
+            return $url;
         });
     }
 }

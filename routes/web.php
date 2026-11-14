@@ -23,6 +23,7 @@ use App\Http\Controllers\AnnouncementController;
 use App\Http\Controllers\Officer\AnnouncementController as OfficerAnnouncementController;
 use App\Http\Controllers\Student\MyRecordsController;
 use App\Http\Controllers\PasswordController;
+use App\Http\Controllers\PasswordResetController;
 
 // Landing route: when someone opens the main address (/), show our landing page.
 Route::get('/', function () {
@@ -36,6 +37,12 @@ Route::middleware('guest')->group(function () {
 
     Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
     Route::post('/login', [LoginController::class, 'login'])->name('login.store');
+
+    // Forgot password: ask for a link, then choose a new password.
+    Route::get('/forgot-password', [PasswordResetController::class, 'request'])->name('password.request');
+    Route::post('/forgot-password', [PasswordResetController::class, 'email'])->middleware('throttle:5,1')->name('password.email');
+    Route::get('/reset-password/{token}', [PasswordResetController::class, 'reset'])->name('password.reset');
+    Route::post('/reset-password', [PasswordResetController::class, 'update'])->name('password.update');
 });
 
 // Auth routes: only for logged-in people (any role).

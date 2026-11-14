@@ -570,3 +570,7 @@ details[open] { margin-bottom: 8px; }
     .card { box-shadow: none; }
     a { color: inherit; text-decoration: none; }
 }
+
+/* ---------- Error pages ---------- */
+.error-code { font-size: 4.5rem; font-weight: 800; color: var(--accent); line-height: 1; text-align: center; text-shadow: 0 0 24px color-mix(in srgb, var(--accent) 35%, transparent); }
+.error-title { text-align: center; margin: 8px 0 6px; font-size: 1.4rem; }

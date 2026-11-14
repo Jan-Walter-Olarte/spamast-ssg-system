@@ -40,6 +40,10 @@
             </div>
 
             <button type="submit" class="btn btn-block">Login</button>
+
+            <p class="auth-links" style="margin-top: 12px;">
+                <a href="{{ route('password.request') }}">Forgot your password?</a>
+            </p>
         </form>
 
         <div class="auth-links">
