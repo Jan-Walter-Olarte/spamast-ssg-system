@@ -15,7 +15,7 @@
 
         {{-- Heading of the report (this part also prints) --}}
         <div class="report-block">
-            <h1>SPAMAST Supreme Student Government</h1>
+            <h1>{{ $schoolName }}</h1>
             <h2 style="margin-top: 4px;">Event Attendance Report</h2>
             <p>
                 <strong>{{ $event->title }}</strong><br>

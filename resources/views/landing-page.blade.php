@@ -48,7 +48,6 @@
     </section>
 
     <!-- Footer -->
-    <footer class="site-footer">&copy; {{ now()->year }} SPAMAST Supreme Student Government</footer>
-
+    <footer class="site-footer">&copy; {{ now()->year }} {{ $schoolName }}</footer>
 </body>
 </html>
