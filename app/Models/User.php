@@ -20,6 +20,7 @@ use Illuminate\Support\Str;
     'role_id',
     'is_active',
     'is_admin',
+    'must_change_password',
     'photo',
 ])]
 #[Hidden(['password', 'remember_token'])]
@@ -35,9 +36,10 @@ class User extends Authenticatable
     protected function casts(): array
     {
         return [
-            'password'  => 'hashed',
-            'is_active' => 'boolean',
-            'is_admin'  => 'boolean',
+            'password'             => 'hashed',
+            'is_active'            => 'boolean',
+            'is_admin'             => 'boolean',
+            'must_change_password' => 'boolean',
         ];
     }
 
@@ -71,7 +73,6 @@ class User extends Authenticatable
      */
     public function getFullNameAttribute(): string
     {
-        // squish() joins the words with single spaces, so a blank middle name leaves no gap.
         return Str::squish("{$this->first_name} {$this->middle_name} {$this->last_name}");
     }
 

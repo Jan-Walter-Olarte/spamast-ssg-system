@@ -22,6 +22,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AnnouncementController;
 use App\Http\Controllers\Officer\AnnouncementController as OfficerAnnouncementController;
 use App\Http\Controllers\Student\MyRecordsController;
+use App\Http\Controllers\PasswordController;
 
 // Landing route: when someone opens the main address (/), show our landing page.
 Route::get('/', function () {
@@ -45,6 +46,10 @@ Route::middleware('auth')->group(function () {
     // Profile: every logged-in user can edit their own account.
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
+
+    // Set a new password (forced for accounts with a temporary password)
+    Route::get('/password/change', [PasswordController::class, 'edit'])->name('password.change');
+    Route::put('/password/change', [PasswordController::class, 'update'])->name('password.change.update');
 });
 
 // Admin section

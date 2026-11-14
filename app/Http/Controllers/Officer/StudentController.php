@@ -91,6 +91,8 @@ class StudentController extends Controller
                     'role_id'     => $studentRole->id,
                     'is_active'   => true,
                     'is_admin'    => false,
+                    // The temporary password is the student number, so it must be changed at first login.
+                    'must_change_password' => true,
                 ]
             );
 

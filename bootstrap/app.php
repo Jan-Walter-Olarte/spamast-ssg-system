@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\EnsurePasswordIsChanged;
 use App\Http\Middleware\EnsureUserHasRole;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -16,6 +17,11 @@ return Application::configure(basePath: dirname(__DIR__))
         // A short nickname for the middleware, used as role:Admin in routes.
         $middleware->alias([
             'role' => EnsureUserHasRole::class,
+        ]);
+
+        // Every web request: a user with a temporary password must change it first.
+        $middleware->web(append: [
+            EnsurePasswordIsChanged::class,
         ]);
 
         // A logged-in person who opens /login or /register goes to their own dashboard.

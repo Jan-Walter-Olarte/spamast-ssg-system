@@ -76,6 +76,8 @@ class UserController extends Controller
             'role_id'     => $data['role_id'],
             'is_active'   => $request->boolean('is_active'),
             'is_admin'    => false,
+            // The Admin chose this password, so the user must replace it at first login.
+            'must_change_password' => true,
         ]);
 
         DashboardCache::people();
@@ -119,6 +121,8 @@ class UserController extends Controller
 
         if (! empty($data['password'])) {
             $user->password = Hash::make($data['password']);
+            // A password reset by an Admin must be replaced by the user at next login.
+            $user->must_change_password = true;
         }
 
         $user->save();
