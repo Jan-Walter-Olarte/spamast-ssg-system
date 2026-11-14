@@ -3,14 +3,16 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\AuditLog;
 use App\Models\Role;
 use App\Models\User;
+use App\Notifications\SystemNotification;
+use App\Support\DashboardCache;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
-use App\Support\DashboardCache;
 
 class UserController extends Controller
 {
@@ -67,7 +69,7 @@ class UserController extends Controller
             'password'    => ['required', 'string', 'min:8', 'confirmed'],
         ]);
 
-        User::create([
+        $user = User::create([
             'first_name'  => $data['first_name'],
             'middle_name' => $data['middle_name'] ?? null,
             'last_name'   => $data['last_name'],
@@ -81,6 +83,12 @@ class UserController extends Controller
         ]);
 
         DashboardCache::people();
+
+        AuditLog::record(
+            'user.created',
+            "Created the account of {$user->full_name} ({$user->email}) as " . $user->role->name . '.',
+            $user
+        );
 
         return redirect()->route('admin.users.index')
             ->with('success', 'User created successfully.');
@@ -112,6 +120,8 @@ class UserController extends Controller
             'password'    => ['nullable', 'string', 'min:8', 'confirmed'],
         ]);
 
+        $oldRole = $user->role->name;
+
         $user->first_name  = $data['first_name'];
         $user->middle_name = $data['middle_name'] ?? null;
         $user->last_name   = $data['last_name'];
@@ -119,7 +129,9 @@ class UserController extends Controller
         $user->role_id     = $data['role_id'];
         $user->is_active   = $request->boolean('is_active');
 
-        if (! empty($data['password'])) {
+        $passwordReset = ! empty($data['password']);
+
+        if ($passwordReset) {
             $user->password = Hash::make($data['password']);
             // A password reset by an Admin must be replaced by the user at next login.
             $user->must_change_password = true;
@@ -128,6 +140,16 @@ class UserController extends Controller
         $user->save();
 
         DashboardCache::people();
+
+        $newRole = Role::find($data['role_id'])->name;
+
+        AuditLog::record(
+            'user.updated',
+            "Updated the account of {$user->full_name} ({$user->email})."
+                . ($oldRole === $newRole ? '' : " Role changed from {$oldRole} to {$newRole}.")
+                . ($passwordReset ? ' Password was reset.' : ''),
+            $user
+        );
 
         return redirect()->route('admin.users.index')
             ->with('success', 'User updated successfully.');
@@ -142,6 +164,21 @@ class UserController extends Controller
 
         DashboardCache::people();
 
+        // Tell the user when their account is approved. They will see it at their first login.
+        if ($user->is_active) {
+            $user->notify(new SystemNotification(
+                'Account approved',
+                'Your account is now active. Welcome to the SPAMAST SSG system!',
+                route($user->dashboardRoute(), [], false)
+            ));
+        }
+
+        AuditLog::record(
+            $user->is_active ? 'user.activated' : 'user.deactivated',
+            ($user->is_active ? 'Activated' : 'Deactivated') . " the account of {$user->full_name} ({$user->email}).",
+            $user
+        );
+
         return back()->with(
             'success',
             $user->is_active ? 'Account activated.' : 'Account deactivated.'
@@ -153,9 +190,14 @@ class UserController extends Controller
     {
         Gate::authorize('delete', $user);
 
+        // Write the description first, because the account is about to disappear.
+        $text = "Deleted the account of {$user->full_name} ({$user->email}).";
+
         $user->delete();
 
         DashboardCache::people();
+
+        AuditLog::record('user.deleted', $text, $user);
 
         return redirect()->route('admin.users.index')
             ->with('success', 'User deleted.');
@@ -173,4 +215,3 @@ class UserController extends Controller
         abort_if($user->hasRole('Admin'), 403, 'Admin accounts are managed from My Profile.');
     }
 }
-

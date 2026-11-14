@@ -24,6 +24,8 @@ use App\Http\Controllers\Officer\AnnouncementController as OfficerAnnouncementCo
 use App\Http\Controllers\Student\MyRecordsController;
 use App\Http\Controllers\PasswordController;
 use App\Http\Controllers\PasswordResetController;
+use App\Http\Controllers\Admin\AuditLogController;
+use App\Http\Controllers\NotificationController;
 
 // Landing route: when someone opens the main address (/), show our landing page.
 Route::get('/', function () {
@@ -57,6 +59,12 @@ Route::middleware('auth')->group(function () {
     // Set a new password (forced for accounts with a temporary password)
     Route::get('/password/change', [PasswordController::class, 'edit'])->name('password.change');
     Route::put('/password/change', [PasswordController::class, 'update'])->name('password.change.update');
+
+
+    // Notifications: every logged-in user has their own
+    Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
+    Route::post('/notifications/read-all', [NotificationController::class, 'readAll'])->name('notifications.read-all');
+    Route::post('/notifications/{id}/read', [NotificationController::class, 'read'])->name('notifications.read');
 });
 
 // Admin section
@@ -72,6 +80,9 @@ Route::middleware(['auth', 'role:Admin'])->prefix('admin')->name('admin.')->grou
 
     // Programs (Query Builder)
     Route::resource('programs', ProgramController::class)->except(['show']);
+
+    // The audit log (read-only)
+    Route::get('audit-log', [AuditLogController::class, 'index'])->name('audit-log.index');
 });
 
 // Officer section

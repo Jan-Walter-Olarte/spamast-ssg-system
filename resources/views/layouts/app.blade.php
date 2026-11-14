@@ -29,6 +29,7 @@
             </div>
 
             <div class="topbar-tools">
+                @include('partials.notification-bell')
                 @include('partials.theme-picker')
 
                 <!-- Logout is a POST form with @csrf, not a link -->

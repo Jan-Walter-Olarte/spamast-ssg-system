@@ -574,3 +574,14 @@ details[open] { margin-bottom: 8px; }
 /* ---------- Error pages ---------- */
 .error-code { font-size: 4.5rem; font-weight: 800; color: var(--accent); line-height: 1; text-align: center; text-shadow: 0 0 24px color-mix(in srgb, var(--accent) 35%, transparent); }
 .error-title { text-align: center; margin: 8px 0 6px; font-size: 1.4rem; }
+
+/* ---------- Notification bell and list ---------- */
+.bell { position: relative; display: inline-flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--nav-muted); color: var(--nav-text); text-decoration: none; font-size: 1.15rem; }
+.bell:hover { background: var(--side-hover); }
+.bell-count { position: absolute; top: -4px; right: -4px; min-width: 18px; height: 18px; padding: 0 5px; border-radius: 999px; background: var(--red); color: #FFFFFF; font-size: 0.7rem; font-weight: 700; line-height: 18px; text-align: center; }
+
+.notice { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 14px 16px; border-bottom: 1px solid var(--border); }
+.notice:last-child { border-bottom: 0; }
+.notice-unread { border-left: 4px solid var(--accent); background: color-mix(in srgb, var(--accent) 8%, transparent); }
+.notice-title { color: var(--text); font-weight: 700; }
+.notice-meta { font-size: 0.8rem; color: var(--muted); }

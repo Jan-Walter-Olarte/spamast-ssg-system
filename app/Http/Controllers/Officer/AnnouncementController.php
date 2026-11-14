@@ -4,10 +4,13 @@ namespace App\Http\Controllers\Officer;
 
 use App\Http\Controllers\Controller;
 use App\Models\Announcement;
+use App\Models\User;
+use App\Notifications\SystemNotification;
 use App\Support\DashboardCache;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
@@ -31,12 +34,24 @@ class AnnouncementController extends Controller
             ? $this->storeAttachment($request, $data['title'])
             : null;
 
-        Announcement::create([
+        $announcement = Announcement::create([
             'user_id'    => $request->user()->id, // the logged-in Officer, never from the form
             'title'      => $data['title'],
             'body'       => $data['body'],
             'attachment' => $path,
         ]);
+
+        // Tell every other active Officer, Adviser and Student.
+        $recipients = User::where('is_active', true)
+            ->where('id', '!=', $request->user()->id)
+            ->whereHas('role', fn ($query) => $query->whereIn('name', ['Officer', 'Adviser', 'Student']))
+            ->get();
+
+        Notification::send($recipients, new SystemNotification(
+            'New announcement',
+            $announcement->title,
+            route('announcements.show', $announcement, false)
+        ));
 
         DashboardCache::officer();
 
