@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Models\Setting;
 use App\Models\User;
 use App\Services\WeatherService;
 use Illuminate\Auth\Notifications\ResetPassword;
@@ -58,6 +59,17 @@ class AppServiceProvider extends ServiceProvider
                     ? $service->label(data_get($weather, 'weather_code') !== null ? (int) data_get($weather, 'weather_code') : null)
                     : null,
             ]);
+        });
+
+        // The school name, for the landing page footer and the report heading.
+        // A composer runs only when its view is drawn, so nothing is queried at startup.
+        View::composer(['landing-page', 'reports.show'], function ($view) {
+            $view->with('schoolName', Setting::schoolName());
+        });
+
+        // The default fine, to pre-fill the fine box when a new event is created.
+        View::composer('officer.events.form', function ($view) {
+            $view->with('defaultFine', Setting::defaultFine());
         });
 
         // Build the password-reset link ourselves, so we can log it while developing.

@@ -28,6 +28,8 @@ use App\Http\Controllers\Admin\AuditLogController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\CalendarController;
 use App\Http\Controllers\Officer\StudentImportController;
+use App\Http\Controllers\ThemeController;
+use App\Http\Controllers\Admin\SettingsController;
 
 // Landing route: when someone opens the main address (/), show our landing page.
 Route::get('/', function () {
@@ -58,6 +60,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
 
+    // Save the chosen theme on the account
+    Route::patch('/profile/theme', [ThemeController::class, 'update'])->name('profile.theme');
+
     // Set a new password (forced for accounts with a temporary password)
     Route::get('/password/change', [PasswordController::class, 'edit'])->name('password.change');
     Route::put('/password/change', [PasswordController::class, 'update'])->name('password.change.update');
@@ -85,6 +90,10 @@ Route::middleware(['auth', 'role:Admin'])->prefix('admin')->name('admin.')->grou
 
     // The audit log (read-only)
     Route::get('audit-log', [AuditLogController::class, 'index'])->name('audit-log.index');
+
+    // Settings (school name and default fine)
+    Route::get('settings', [SettingsController::class, 'edit'])->name('settings.edit');
+    Route::put('settings', [SettingsController::class, 'update'])->name('settings.update');
 });
 
 // Officer section

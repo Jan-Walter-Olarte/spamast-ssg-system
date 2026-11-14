@@ -11,6 +11,7 @@
         <a href="{{ route('admin.institutes.index') }}" class="{{ request()->routeIs('admin.institutes.*') ? 'active' : '' }}">Institutes</a>
         <a href="{{ route('admin.programs.index') }}" class="{{ request()->routeIs('admin.programs.*') ? 'active' : '' }}">Programs</a>
         <a href="{{ route('admin.audit-log.index') }}" class="{{ request()->routeIs('admin.audit-log.*') ? 'active' : '' }}">Audit Log</a>
+        <a href="{{ route('admin.settings.edit') }}" class="{{ request()->routeIs('admin.settings.*') ? 'active' : '' }}">Settings</a>
     @endif
 
     {{-- Officers (Gate: manage-ssg). Attendance and Fines open from each event's page. --}}

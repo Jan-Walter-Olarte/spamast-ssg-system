@@ -22,11 +22,17 @@ use Illuminate\Support\Str;
     'is_admin',
     'must_change_password',
     'photo',
+    'theme',
 ])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
     use Notifiable;
+
+    /**
+     * The themes a user may choose (the names used by the stylesheet).
+     */
+    public const THEMES = ['cinematic', 'saas', 'blue', 'friendly', 'minimal', 'red'];
 
     /**
      * Get the attributes that should be cast.

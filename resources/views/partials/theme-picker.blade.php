@@ -18,10 +18,24 @@
         // Show the theme that is currently applied.
         select.value = document.documentElement.getAttribute('data-theme') || 'blue';
 
-        // Apply and remember a new choice.
         select.addEventListener('change', function () {
+            // Apply it at once and remember it in this browser.
             document.documentElement.setAttribute('data-theme', select.value);
             try { localStorage.setItem('spamast-theme', select.value); } catch (e) { /* ignore */ }
+
+            @auth
+            // Logged in: also save it on the account, so it follows the user to any computer.
+            fetch(@json(route('profile.theme')), {
+                method: 'PATCH',
+                credentials: 'same-origin',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'X-CSRF-TOKEN': @json(csrf_token())
+                },
+                body: JSON.stringify({ theme: select.value })
+            }).catch(function () { /* the theme still works on this page if saving fails */ });
+            @endauth
         });
     })();
 </script>

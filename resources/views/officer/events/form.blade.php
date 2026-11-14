@@ -57,7 +57,7 @@
         <div>
             <label for="fine_per_miss">Fine per missed scan</label>
             <input type="number" id="fine_per_miss" name="fine_per_miss" min="0" step="0.01"
-                   value="{{ old('fine_per_miss', $event->fine_per_miss ?? '0') }}" required>
+                   value="{{ old('fine_per_miss', $event->fine_per_miss ?? $defaultFine) }}"
         </div>
     </div>
 
