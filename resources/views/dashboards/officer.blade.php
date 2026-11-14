@@ -13,6 +13,26 @@
         <div class="card"><div class="num">{{ $stats['announcements'] }}</div><a href="{{ route('announcements.index') }}">Announcements</a></div>
     </div>
 
+    <div class="chart-grid">
+        <div>
+            @include('partials.bar-chart', [
+                'title' => 'Students who attended the latest events',
+                'items' => $charts['attendance'],
+                'money' => false,
+                'empty' => 'No events yet.',
+            ])
+        </div>
+        <div>
+            @include('partials.bar-chart', [
+                'title' => 'Unpaid fines by program',
+                'items' => $charts['fines'],
+                'money' => true,
+                'empty' => 'There are no unpaid fines.',
+            ])
+        </div>
+    </div>
+
     @include('partials.weather')
+
     @include('partials.latest-announcements')
 @endsection

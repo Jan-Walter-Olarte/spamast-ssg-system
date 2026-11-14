@@ -13,16 +13,18 @@ class DashboardCache
         Cache::forget('admin.stats');
     }
 
-    // The Officer dashboard numbers changed.
+    // The Officer dashboard numbers (and the shared event charts) changed.
     public static function officer(): void
     {
         Cache::forget('officer.stats');
+        Cache::forget('charts.events');
     }
 
-    // The Adviser dashboard numbers changed.
+    // The Adviser dashboard numbers (and the shared event charts) changed.
     public static function adviser(): void
     {
         Cache::forget('adviser.stats');
+        Cache::forget('charts.events');
     }
 
     // One student's dashboard numbers changed (the key belongs to the user id).

@@ -31,5 +31,20 @@
         <div class="card"><div class="num">{{ $stats['programs'] }}</div><a href="{{ route('admin.programs.index') }}">Programs</a></div>
     </div>
 
+    @php
+        // Turn the role counts into chart bars.
+        $roleBars = collect($stats['roles'])
+            ->map(fn ($count, $role) => ['label' => $role . 's', 'sub' => '', 'value' => (int) $count])
+            ->values()
+            ->all();
+    @endphp
+
+    @include('partials.bar-chart', [
+        'title' => 'Users by role',
+        'items' => $roleBars,
+        'money' => false,
+        'empty' => 'No users yet.',
+    ])
+
     @include('partials.weather')
 @endsection
