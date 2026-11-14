@@ -26,6 +26,8 @@ use App\Http\Controllers\PasswordController;
 use App\Http\Controllers\PasswordResetController;
 use App\Http\Controllers\Admin\AuditLogController;
 use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\CalendarController;
+use App\Http\Controllers\Officer\StudentImportController;
 
 // Landing route: when someone opens the main address (/), show our landing page.
 Route::get('/', function () {
@@ -89,6 +91,10 @@ Route::middleware(['auth', 'role:Admin'])->prefix('admin')->name('admin.')->grou
 Route::middleware(['auth', 'role:Officer'])->prefix('officer')->name('officer.')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'officer'])->name('dashboard');
 
+    // Bulk import of students from a CSV file (above the resource, so "import" is never read as a student)
+    Route::get('students/import', [StudentImportController::class, 'create'])->name('students.import');
+    Route::post('students/import', [StudentImportController::class, 'store'])->name('students.import.store');
+
     // Student management (Eloquent, no "show" page)
     Route::resource('students', StudentController::class)->except(['show']);
 
@@ -138,6 +144,8 @@ Route::middleware(['auth', 'role:Student'])->prefix('student')->name('student.')
 Route::middleware(['auth', 'role:Officer,Adviser,Student'])->group(function () {
     Route::get('/events', [EventController::class, 'index'])->name('events.index');
     Route::get('/events/{event}', [EventController::class, 'show'])->name('events.show');
+    // The month calendar
+    Route::get('/calendar', [CalendarController::class, 'index'])->name('calendar.index');
 });
 
 // Attendance list of one event: Officers and Advisers (the Officer controls are guarded separately).

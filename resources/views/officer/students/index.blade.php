@@ -5,7 +5,10 @@
 @section('content')
     <div class="page-head">
         <h1>Students</h1>
-        <a href="{{ route('officer.students.create') }}" class="btn">Add Student</a>
+        <div class="actions">
+            <a href="{{ route('officer.students.import') }}" class="btn btn-light">Import CSV</a>
+            <a href="{{ route('officer.students.create') }}" class="btn">Add Student</a>
+        </div>
     </div>
 
     {{-- Search and filters (a GET form, so the address keeps them) --}}

@@ -17,12 +17,14 @@
     @can('manage-ssg')
         <a href="{{ route('officer.students.index') }}" class="{{ request()->routeIs('officer.students.*') ? 'active' : '' }}">Students</a>
         <a href="{{ route('events.index') }}" class="{{ request()->routeIs('events.*', 'officer.events.*', 'attendance.*', 'penalties.*') ? 'active' : '' }}">Events</a>
+        <a href="{{ route('calendar.index') }}" class="{{ request()->routeIs('calendar.*') ? 'active' : '' }}">Calendar</a>
         <a href="{{ route('announcements.index') }}" class="{{ request()->routeIs('announcements.*', 'officer.announcements.*') ? 'active' : '' }}">Announcements</a>
     @endcan
 
     {{-- Advisers view events, attendance, fines and announcements --}}
     @if (auth()->user()->hasRole('Adviser'))
         <a href="{{ route('events.index') }}" class="{{ request()->routeIs('events.*', 'attendance.*', 'penalties.*') ? 'active' : '' }}">Events</a>
+        <a href="{{ route('calendar.index') }}" class="{{ request()->routeIs('calendar.*') ? 'active' : '' }}">Calendar</a>
         <a href="{{ route('announcements.index') }}" class="{{ request()->routeIs('announcements.*') ? 'active' : '' }}">Announcements</a>
     @endif
 
@@ -34,6 +36,7 @@
     {{-- Students (Gate: use-attendance). Check-in and check-out happen on each event's page. --}}
     @can('use-attendance')
         <a href="{{ route('events.index') }}" class="{{ request()->routeIs('events.*') ? 'active' : '' }}">Events &amp; Check-in</a>
+        <a href="{{ route('calendar.index') }}" class="{{ request()->routeIs('calendar.*') ? 'active' : '' }}">Calendar</a>
         <a href="{{ route('student.my-attendance') }}" class="{{ request()->routeIs('student.my-attendance') ? 'active' : '' }}">My Attendance</a>
         <a href="{{ route('student.my-fines') }}" class="{{ request()->routeIs('student.my-fines') ? 'active' : '' }}">My Fines</a>
         <a href="{{ route('announcements.index') }}" class="{{ request()->routeIs('announcements.*') ? 'active' : '' }}">Announcements</a>
