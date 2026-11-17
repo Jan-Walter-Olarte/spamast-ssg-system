@@ -4,7 +4,9 @@
 
 @section('content')
     <h1>Welcome, {{ auth()->user()->first_name }}!</h1>
-    <p>You are logged in as <strong>Admin</strong>. Today is {{ today()->format('F d, Y') }}.</p>
+    <p class="page-intro">You are logged in as <strong>Admin</strong>. Today is {{ today()->format('l, F d, Y') }}. Start with a quick action, or check the summary below.</p>
+
+    @include('partials.quick-actions')
 
     <h2>Users</h2>
     <div class="grid">

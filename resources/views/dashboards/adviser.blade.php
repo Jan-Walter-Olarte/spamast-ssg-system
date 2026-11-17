@@ -4,8 +4,11 @@
 
 @section('content')
     <h1>Welcome, {{ auth()->user()->first_name }}!</h1>
-    <p>You are logged in as <strong>Adviser</strong>. Today is {{ today()->format('F d, Y') }}.</p>
+    <p class="page-intro">You are logged in as <strong>Adviser</strong>. Today is {{ today()->format('l, F d, Y') }}. Start with a quick action, or check the summary and charts below.</p>
 
+    @include('partials.quick-actions')
+
+    <h2>Summary</h2>
     <div class="grid">
         <div class="card"><div class="num">{{ $stats['events'] }}</div><a href="{{ route('events.index') }}">Upcoming events</a></div>
         <div class="card"><div class="num">{{ $stats['attendance'] }}</div>Attendance records</div>

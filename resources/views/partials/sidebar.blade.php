@@ -1,45 +1,86 @@
-<aside class="sidebar">
-    <div class="brand">SPAMAST <span>SSG</span></div>
+@php
+    $sideUser = auth()->user();
 
-    {{-- Every role --}}
-    <a href="{{ route(auth()->user()->dashboardRoute()) }}" class="{{ request()->routeIs('*.dashboard') ? 'active' : '' }}">Dashboard</a>
-    <a href="{{ route('profile.edit') }}" class="{{ request()->routeIs('profile.*') ? 'active' : '' }}">My Profile</a>
+    // Each group: [heading, [ [label, route, routes that count as "here", icon], ... ]]
+    $groups = [
+        [null, [['Dashboard', $sideUser->dashboardRoute(), ['*.dashboard'], 'home']]],
+    ];
 
-    {{-- Admin only --}}
-    @if (auth()->user()->hasRole('Admin'))
-        <a href="{{ route('admin.users.index') }}" class="{{ request()->routeIs('admin.users.*') ? 'active' : '' }}">Manage Users</a>
-        <a href="{{ route('admin.institutes.index') }}" class="{{ request()->routeIs('admin.institutes.*') ? 'active' : '' }}">Institutes</a>
-        <a href="{{ route('admin.programs.index') }}" class="{{ request()->routeIs('admin.programs.*') ? 'active' : '' }}">Programs</a>
-        <a href="{{ route('admin.audit-log.index') }}" class="{{ request()->routeIs('admin.audit-log.*') ? 'active' : '' }}">Audit Log</a>
-        <a href="{{ route('admin.settings.edit') }}" class="{{ request()->routeIs('admin.settings.*') ? 'active' : '' }}">Settings</a>
-    @endif
+    if ($sideUser->hasRole('Admin')) {
+        $groups[] = ['Manage', [
+            ['Manage Users', 'admin.users.index',      ['admin.users.*'],      'users'],
+            ['Institutes',   'admin.institutes.index', ['admin.institutes.*'], 'building'],
+            ['Programs',     'admin.programs.index',   ['admin.programs.*'],   'book'],
+        ]];
+        $groups[] = ['System', [
+            ['Audit Log', 'admin.audit-log.index', ['admin.audit-log.*'], 'shield'],
+            ['Settings',  'admin.settings.edit',   ['admin.settings.*'],  'sliders'],
+        ]];
+    }
 
-    {{-- Officers (Gate: manage-ssg). Attendance and Fines open from each event's page. --}}
-    @can('manage-ssg')
-        <a href="{{ route('officer.students.index') }}" class="{{ request()->routeIs('officer.students.*') ? 'active' : '' }}">Students</a>
-        <a href="{{ route('events.index') }}" class="{{ request()->routeIs('events.*', 'officer.events.*', 'attendance.*', 'penalties.*') ? 'active' : '' }}">Events</a>
-        <a href="{{ route('calendar.index') }}" class="{{ request()->routeIs('calendar.*') ? 'active' : '' }}">Calendar</a>
-        <a href="{{ route('announcements.index') }}" class="{{ request()->routeIs('announcements.*', 'officer.announcements.*') ? 'active' : '' }}">Announcements</a>
-    @endcan
+    if ($sideUser->hasRole('Officer')) {
+        $groups[] = ['Manage', [
+            ['Students',      'officer.students.index', ['officer.students.*'],                                                'graduation'],
+            ['Events',        'events.index',           ['events.*', 'officer.events.*', 'attendance.*', 'penalties.*'],       'flag'],
+            ['Calendar',      'calendar.index',         ['calendar.*'],                                                        'calendar'],
+            ['Announcements', 'announcements.index',    ['announcements.*', 'officer.announcements.*'],                        'megaphone'],
+        ]];
+        $groups[] = ['Insights', [
+            ['Reports', 'reports.index', ['reports.*'], 'chart'],
+        ]];
+    }
 
-    {{-- Advisers view events, attendance, fines and announcements --}}
-    @if (auth()->user()->hasRole('Adviser'))
-        <a href="{{ route('events.index') }}" class="{{ request()->routeIs('events.*', 'attendance.*', 'penalties.*') ? 'active' : '' }}">Events</a>
-        <a href="{{ route('calendar.index') }}" class="{{ request()->routeIs('calendar.*') ? 'active' : '' }}">Calendar</a>
-        <a href="{{ route('announcements.index') }}" class="{{ request()->routeIs('announcements.*') ? 'active' : '' }}">Announcements</a>
-    @endif
+    if ($sideUser->hasRole('Adviser')) {
+        $groups[] = ['Browse', [
+            ['Events',        'events.index',        ['events.*', 'attendance.*', 'penalties.*'], 'flag'],
+            ['Calendar',      'calendar.index',      ['calendar.*'],                              'calendar'],
+            ['Announcements', 'announcements.index', ['announcements.*'],                         'megaphone'],
+        ]];
+        $groups[] = ['Insights', [
+            ['Reports', 'reports.index', ['reports.*'], 'chart'],
+        ]];
+    }
 
-    {{-- Officers and Advisers (Gate: view-reports) --}}
-    @can('view-reports')
-        <a href="{{ route('reports.index') }}" class="{{ request()->routeIs('reports.*') ? 'active' : '' }}">Reports</a>
-    @endcan
+    if ($sideUser->hasRole('Student')) {
+        $groups[] = ['My Activity', [
+            ['Events & Check-in', 'events.index',           ['events.*'],              'flag'],
+            ['My Attendance',     'student.my-attendance',  ['student.my-attendance'], 'clipboard'],
+            ['My Fines',          'student.my-fines',       ['student.my-fines'],      'coin'],
+        ]];
+        $groups[] = ['Browse', [
+            ['Calendar',      'calendar.index',      ['calendar.*'],      'calendar'],
+            ['Announcements', 'announcements.index', ['announcements.*'], 'megaphone'],
+        ]];
+    }
 
-    {{-- Students (Gate: use-attendance). Check-in and check-out happen on each event's page. --}}
-    @can('use-attendance')
-        <a href="{{ route('events.index') }}" class="{{ request()->routeIs('events.*') ? 'active' : '' }}">Events &amp; Check-in</a>
-        <a href="{{ route('calendar.index') }}" class="{{ request()->routeIs('calendar.*') ? 'active' : '' }}">Calendar</a>
-        <a href="{{ route('student.my-attendance') }}" class="{{ request()->routeIs('student.my-attendance') ? 'active' : '' }}">My Attendance</a>
-        <a href="{{ route('student.my-fines') }}" class="{{ request()->routeIs('student.my-fines') ? 'active' : '' }}">My Fines</a>
-        <a href="{{ route('announcements.index') }}" class="{{ request()->routeIs('announcements.*') ? 'active' : '' }}">Announcements</a>
-    @endcan
+    $groups[] = ['Account', [
+        ['My Profile',     'profile.edit',        ['profile.*'],       'user'],
+        ['Notifications',  'notifications.index', ['notifications.*'], 'bell'],
+    ]];
+
+    $unreadCount = $sideUser->unreadNotifications()->count();
+@endphp
+
+<aside class="sidebar" aria-label="Main menu">
+    <a href="{{ route($sideUser->dashboardRoute()) }}" class="brand">
+        <span class="brand-mark">S</span>
+        <span>SPAMAST <span class="brand-accent">SSG</span></span>
+    </a>
+
+    @foreach ($groups as [$heading, $items])
+        @if ($heading)
+            <div class="side-title">{{ $heading }}</div>
+        @endif
+
+        @foreach ($items as [$label, $route, $patterns, $icon])
+            <a href="{{ route($route) }}" class="side-link {{ request()->routeIs(...$patterns) ? 'active' : '' }}"
+               @if (request()->routeIs(...$patterns)) aria-current="page" @endif>
+                @include('partials.icon', ['name' => $icon])
+                <span>{{ $label }}</span>
+                @if ($label === 'Notifications' && $unreadCount > 0)
+                    <span class="side-count">{{ $unreadCount > 99 ? '99+' : $unreadCount }}</span>
+                @endif
+            </a>
+        @endforeach
+    @endforeach
 </aside>
